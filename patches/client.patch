@@ -1,0 +1,3578 @@
+--- net/minecraft/src/BlockOre.java
++++ net/minecraft/src/BlockOre.java
+@@ -8,7 +8,31 @@
+ 	}
+ 
+ 	public int idDropped(int var1, Random var2) {
+-		return this.blockID == Block.oreCoal.blockID ? Item.coal.shiftedIndex : (this.blockID == Block.oreDiamond.blockID ? Item.diamond.shiftedIndex : (this.blockID == Block.oreLapis.blockID ? Item.dyePowder.shiftedIndex : this.blockID));
++		int ret;
++		switch (this.blockID) {
++			// Only constants can be used
++			// thanks, Java...
++			// All IDs declared in Item.java
++		case 16:
++			ret = Item.coal.shiftedIndex;
++			break;
++		case 56:
++			ret = Item.diamond.shiftedIndex;
++			break;
++		case 21:
++			ret = Item.dyePowder.shiftedIndex;
++			break;
++		case 101:
++			ret = Item.emeraldShard.shiftedIndex;
++			break;
++		case 102:
++			ret = Item.rubyShard.shiftedIndex;
++			break;
++		default:
++			ret = this.blockID;
++			break;
++		}
++		return ret;
+ 	}
+ 
+ 	public int quantityDropped(Random var1) {
+--- net/minecraft/src/EnumOptionsMappingHelper.java
++++ net/minecraft/src/EnumOptionsMappingHelper.java
+@@ -29,5 +29,9 @@
+ 		} catch (NoSuchFieldError var1) {
+ 		}
+ 
++		try {
++			enumOptionsMappingHelperArray[EnumOptions.CONSOLE_GAMMA.ordinal()] = 6;
++		} catch (NoSuchFieldError var6) {
++		}
+ 	}
+ }
+--- net/minecraft/src/GuiInventory.java
++++ net/minecraft/src/GuiInventory.java
+@@ -34,6 +34,18 @@
+ 		int var3 = (this.width - this.xSize) / 2;
+ 		int var4 = (this.height - this.ySize) / 2;
+ 		this.drawTexturedModalRect(var3, var4, 0, 0, this.xSize, this.ySize);
++
++		// Placeholder slots for armor
++		InventoryPlayer inv = ((ContainerPlayer)this.inventorySlots).playerInventory;
++		if (inv.getStackInSlot(39) == null)
++			this.drawTexturedModalRect(var3 + 7, var4 + 7, this.xSize, 0, 18, 18);
++		if (inv.getStackInSlot(38) == null)
++			this.drawTexturedModalRect(var3 + 7, var4 + 25, this.xSize, 18, 18, 18);
++		if (inv.getStackInSlot(37) == null)
++			this.drawTexturedModalRect(var3 + 7, var4 + 43, this.xSize, 36, 18, 18);
++		if (inv.getStackInSlot(36) == null)
++			this.drawTexturedModalRect(var3 + 7, var4 + 61, this.xSize, 54, 18, 18);
++
+ 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+ 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+ 		GL11.glPushMatrix();
+--- net/minecraft/src/WorldGenDungeons.java
++++ net/minecraft/src/WorldGenDungeons.java
+@@ -105,8 +105,34 @@
+ 	}
+ 
+ 	private ItemStack pickCheckLootItem(Random var1) {
+-		int var2 = var1.nextInt(11);
+-		return var2 == 0 ? new ItemStack(Item.saddle) : (var2 == 1 ? new ItemStack(Item.ingotIron, var1.nextInt(4) + 1) : (var2 == 2 ? new ItemStack(Item.bread) : (var2 == 3 ? new ItemStack(Item.wheat, var1.nextInt(4) + 1) : (var2 == 4 ? new ItemStack(Item.gunpowder, var1.nextInt(4) + 1) : (var2 == 5 ? new ItemStack(Item.silk, var1.nextInt(4) + 1) : (var2 == 6 ? new ItemStack(Item.bucketEmpty) : (var2 == 7 && var1.nextInt(100) == 0 ? new ItemStack(Item.appleGold) : (var2 == 8 && var1.nextInt(2) == 0 ? new ItemStack(Item.redstone, var1.nextInt(4) + 1) : (var2 == 9 && var1.nextInt(10) == 0 ? new ItemStack(Item.itemsList[Item.record13.shiftedIndex + var1.nextInt(2)]) : (var2 == 10 ? new ItemStack(Item.dyePowder, 1, 3) : null))))))))));
++		int var2 = var1.nextInt(13);
++		return var2 == 0
++			? new ItemStack(Item.saddle)
++			: (var2 == 1
++			   ? new ItemStack(Item.ingotIron, var1.nextInt(4) + 1)
++			   : (var2 == 2
++				  ? new ItemStack(Item.bread)
++				  : (var2 == 3
++					 ? new ItemStack(Item.wheat, var1.nextInt(4) + 1)
++					 : (var2 == 4
++						? new ItemStack(Item.gunpowder, var1.nextInt(4) + 1)
++						: (var2 == 5
++						   ? new ItemStack(Item.silk, var1.nextInt(4) + 1)
++						   : (var2 == 6
++							  ? new ItemStack(Item.bucketEmpty)
++							  : (var2 == 7 && var1.nextInt(100) == 0
++								 ? new ItemStack(Item.appleGold)
++								 : (var2 == 8 && var1.nextInt(2) == 0
++									? new ItemStack(Item.redstone, var1.nextInt(4) + 1)
++									: (var2 == 9 && var1.nextInt(10) == 0
++									   ? new ItemStack(Item.itemsList[Item.record13.shiftedIndex + var1.nextInt(2)])
++									   : (var2 == 10
++										  ? new ItemStack(Item.dyePowder, 1, 3)
++										  : (var2 == 11 && var1.nextInt(25) == 0
++											 ? new ItemStack(Item.pickaxeDiamond, 1, 65)
++											 : (var2 == 12
++													? new ItemStack(Block.grapeBushSapling, 1 + var1.nextInt(3))
++													: null))))))))))));
+ 	}
+ 
+ 	private String pickMobSpawner(Random var1) {
+--- net/minecraft/src/GuiMainMenu.java
++++ net/minecraft/src/GuiMainMenu.java
+@@ -14,6 +14,7 @@
+ 	private float updateCounter = 0.0F;
+ 	private String splashText = "missingno";
+ 	private GuiButton multiplayerButton;
++	private boolean easter_egg = false;
+ 
+ 	public GuiMainMenu() {
+ 		try {
+@@ -36,6 +37,7 @@
+ 		} catch (Exception var4) {
+ 		}
+ 
++		this.easter_egg = this.rand.nextInt(10) == 1;
+ 	}
+ 
+ 	public void updateScreen() {
+@@ -100,6 +102,7 @@
+ 	}
+ 
+ 	public void drawScreen(int var1, int var2, float var3) {
++		Purity inst = new Purity();
+ 		this.drawDefaultBackground();
+ 		Tessellator var4 = Tessellator.instance;
+ 		short var5 = 274;
+@@ -109,6 +112,52 @@
+ 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+ 		this.drawTexturedModalRect(var6 + 0, var7 + 0, 0, 0, 155, 44);
+ 		this.drawTexturedModalRect(var6 + 155, var7 + 0, 0, 45, 155, 44);
++		this.drawTexturedModalRect(this.width / 2 - 35, var7 + 35, 155, 0, 70, 13);
++
++		if (this.easter_egg || inst.isDebug()) {
++			GL11.glPushMatrix();
++			GL11.glScalef(2, 2, 1);
++			this.drawTexturedModalRect((((this.width / 2) - 4) / 2) - 4, (var7 / 2) - 7, 225, 0, 8, 7);
++			GL11.glPopMatrix();
++			GL11.glPushMatrix();
++			GL11.glScalef(2, 2, 1);
++			float flies = 1.8F - MathHelper.abs(
++				MathHelper.sin((float)(System.currentTimeMillis() % 1000L) / 1000.0F * (float)Math.PI * 2.0F) / 0.5F);
++
++			int[] fstFly = {1, -5};
++			int[] sndFly = {-5, -8};
++			GL11.glTranslatef((float)((this.width / 2) - 4) / 2, (var7 / 2) - flies, 0.0F);
++
++			GL11.glPushMatrix();
++			GL11.glEnable(GL11.GL_BLEND);
++			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
++			GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.35F);
++			GL11.glTranslatef(0, flies * -0.05F, 0);
++			this.drawTexturedModalRect(-4, -12, 236, 0, 8, 10);
++			GL11.glPopMatrix();
++
++			GL11.glDisable(GL11.GL_BLEND);
++			GL11.glTranslatef(0, flies * 1.25F, 0);
++			GL11.glTranslatef(0, -0.15F, 0);
++
++			int spr = 0;
++			float temp = MathHelper.sin((float)(System.currentTimeMillis() % 1000L) / 250.0F * (float)Math.PI * 2.0F) / 0.5F;
++			if (temp > 0) spr = 1;
++			if (spr == 0)
++				this.drawTexturedModalRect(fstFly[0], fstFly[1], 233, 2, 3, 2);
++			else
++				this.drawTexturedModalRect(fstFly[0], fstFly[1], 233, 0, 3, 2);
++
++			spr = 0;
++			if (temp <= 0) spr = 1;
++			if (spr == 0)
++				this.drawTexturedModalRect(sndFly[0], sndFly[1], 233, 2, 3, 2);
++			else
++				this.drawTexturedModalRect(sndFly[0], sndFly[1], 233, 0, 3, 2);
++
++			GL11.glPopMatrix();
++		}
++
+ 		var4.setColorOpaque_I(16777215);
+ 		GL11.glPushMatrix();
+ 		GL11.glTranslatef((float)(this.width / 2 + 90), 70.0F, 0.0F);
+@@ -118,7 +167,7 @@
+ 		GL11.glScalef(var8, var8, var8);
+ 		this.drawCenteredString(this.fontRenderer, this.splashText, 0, -8, 16776960);
+ 		GL11.glPopMatrix();
+-		this.drawString(this.fontRenderer, "Minecraft Beta 1.7.3", 2, 2, 5263440);
++		this.drawString(this.fontRenderer, inst.getTitle(), 2, 2, 5263440);
+ 		String var9 = "Copyright Mojang AB. Do not distribute.";
+ 		this.drawString(this.fontRenderer, var9, this.width - this.fontRenderer.getStringWidth(var9) - 2, this.height - 10, 16777215);
+ 		super.drawScreen(var1, var2, var3);
+--- /dev/null
++++ net/minecraft/src/TileEntityBarrel.java
+@@ -1,0 +1,163 @@
++package net.minecraft.src;
++
++public class TileEntityBarrel extends TileEntity implements IInventory {
++  /*
++   * Item stacks mapping
++   * 0 - water bucket slot
++   * 1 - output (bottle)
++   * 2 - ingredients
++   */
++  private ItemStack[] barrelItemStacks = new ItemStack[3];
++
++  public byte ingredientFlags = 0;
++  public byte fluidLeft = 0;
++
++  public int getSizeInventory() {
++    return this.barrelItemStacks.length;
++  }
++
++  public ItemStack getStackInSlot(int slot) {
++    return this.barrelItemStacks[slot];
++  }
++
++  public ItemStack decrStackSize(int slot, int size) {
++    if (this.barrelItemStacks[slot] == null) return null;
++
++    ItemStack item;
++    if (this.barrelItemStacks[slot].stackSize <= size) {
++      item = this.barrelItemStacks[slot];
++      this.barrelItemStacks[slot] = null;
++      return item;
++    }
++
++    item = this.barrelItemStacks[slot].splitStack(size);
++    if (this.barrelItemStacks[slot].stackSize == 0)
++      this.barrelItemStacks[slot] = null;
++
++    return item;
++  }
++
++  public void setInventorySlotContents(int slot, ItemStack item) {
++    this.barrelItemStacks[slot] = item;
++    if (item != null && item.stackSize > this.getInventoryStackLimit()) {
++      item.stackSize = this.getInventoryStackLimit();
++    }
++  }
++
++  public String getInvName() {
++    return "Barrel";
++  }
++
++  public void readFromNBT(NBTTagCompound nbt) {
++    super.readFromNBT(nbt);
++    NBTTagList list = nbt.getTagList("Items");
++    this.barrelItemStacks = new ItemStack[this.getSizeInventory()];
++
++    for (int i = 0; i < list.tagCount(); i++) {
++      NBTTagCompound tag = (NBTTagCompound)list.tagAt(i);
++      byte slot = tag.getByte("Slot");
++      if (slot >= 0 && slot < this.barrelItemStacks.length)
++        this.barrelItemStacks[slot] = new ItemStack(tag);
++    }
++
++    if ((this.fluidLeft = nbt.getByte("FluidLeft")) > 0)
++      this.ingredientFlags = nbt.getByte("IngredientFlags");
++  }
++
++  public void writeToNBT(NBTTagCompound nbt) {
++    super.writeToNBT(nbt);
++
++    nbt.setByte("FluidLeft", this.fluidLeft);
++    if (this.fluidLeft > 0)
++      nbt.setByte("IngredientFlags", this.ingredientFlags);
++
++    NBTTagList tags = new NBTTagList();
++    for (int i = 0; i < this.barrelItemStacks.length; i++) {
++      if (this.barrelItemStacks[i] != null) {
++        NBTTagCompound tag = new NBTTagCompound();
++        tag.setByte("Slot", (byte)i);
++        this.barrelItemStacks[i].writeToNBT(tag);
++        tags.setTag(tag);
++      }
++    }
++
++    nbt.setTag("Items", tags);
++  }
++
++  public int getInventoryStackLimit() { return 1; }
++
++  public boolean canInteractWith(EntityPlayer ply) {
++    return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false:
++      ply.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
++  }
++
++  public void updateEntity() {
++    if (!this.worldObj.multiplayerWorld) {
++      if (this.barrelItemStacks[0] != null &&
++          this.barrelItemStacks[0].itemID == Item.bucketWater.shiftedIndex &&
++          this.fluidLeft < 5) {
++        this.fluidLeft = 5;
++        this.ingredientFlags = 0;
++        this.barrelItemStacks[0] = new ItemStack(Item.bucketEmpty, 1);
++      }
++
++      if (this.fluidLeft > 0) {
++        if (this.barrelItemStacks[2] != null)
++          this.addIngredients();
++
++        if (this.barrelItemStacks[1] != null &&
++            this.barrelItemStacks[1].itemID == Item.bottle.shiftedIndex)
++          this.brew();
++      }
++      else
++        this.ingredientFlags = 0;
++    }
++  }
++
++  private void addIngredients() {
++    switch (this.barrelItemStacks[2].itemID) {
++    case 256 + 40:
++      this.ingredientFlags |= 0b100;
++      break;
++    case 256 + 41:
++      this.ingredientFlags |= 0b1000;
++      break;
++    case 256 + 97:
++      this.ingredientFlags |= 0b1;
++      break;
++    case 256 + 3041:
++      this.ingredientFlags |= 0b10;
++      break;
++    case 256 + 4:
++      this.ingredientFlags |= 0b10000;
++      break;
++    default: // All other items
++      // Do nothing
++      return;
++    }
++    this.barrelItemStacks[2] = null;
++  }
++
++  private void brew() {
++    switch (this.ingredientFlags) {
++    case 0b11:
++      this.barrelItemStacks[1] = new ItemStack(Item.wine, 1);
++      break;
++    case 0b101:
++      this.barrelItemStacks[1] = new ItemStack(Item.beer, 1);
++      break;
++    case 0b1001:
++      this.barrelItemStacks[1] = new ItemStack(Item.kvass, 1);
++      break;
++    case 0b10001:
++      this.barrelItemStacks[1] = new ItemStack(Item.cider, 1);
++      break;
++    default:
++      if (this.ingredientFlags == 0b1 || this.ingredientFlags == 0b0)
++        return;
++      this.barrelItemStacks[1] = new ItemStack(Item.unknownBrew, 1);
++      break;
++    }
++    this.fluidLeft--;
++  }
++}
+--- net/minecraft/src/EntityCow.java
++++ net/minecraft/src/EntityCow.java
+@@ -1,10 +1,25 @@
+ package net.minecraft.src;
+ 
+ public class EntityCow extends EntityAnimal {
++	public int timeUntilNextPoop;
++
+ 	public EntityCow(World var1) {
+ 		super(var1);
+ 		this.texture = "/mob/cow.png";
+ 		this.setSize(0.9F, 1.3F);
++		this.timeUntilNextPoop = this.rand.nextInt(2000) + 5000;
++	}
++
++	public void onLivingUpdate() {
++		super.onLivingUpdate();
++
++		if (!this.worldObj.multiplayerWorld && --this.timeUntilNextPoop <= 0) {
++			this.worldObj.playSoundAtEntity(this, "mob.chickenplop", 1.0F,
++											(this.rand.nextFloat() - this.rand.nextFloat()
++											 * 0.2F + 1.0F));
++			this.dropItem(Item.poop.shiftedIndex, 1);
++			this.timeUntilNextPoop = this.rand.nextInt(4000) + 10000;
++		}
+ 	}
+ 
+ 	public void writeEntityToNBT(NBTTagCompound var1) {
+--- net/minecraft/src/TileEntityFurnace.java
++++ net/minecraft/src/TileEntityFurnace.java
+@@ -176,8 +176,25 @@
+ 		if(var1 == null) {
+ 			return 0;
+ 		} else {
+-			int var2 = var1.getItem().shiftedIndex;
+-			return var2 < 256 && Block.blocksList[var2].blockMaterial == Material.wood ? 300 : (var2 == Item.stick.shiftedIndex ? 100 : (var2 == Item.coal.shiftedIndex ? 1600 : (var2 == Item.bucketLava.shiftedIndex ? 20000 : (var2 == Block.sapling.blockID ? 100 : 0))));
++			int id = var1.getItem().shiftedIndex;
++			if (id < 256 && Block.blocksList[id].blockMaterial == Material.wood)
++				return 300; // Wooden blocks
++			else if (id == Item.stick.shiftedIndex)
++				return 100; // Stick
++			else if (id == Item.coal.shiftedIndex)
++				return 1600; // Coal
++			else if (id == Item.coalDust.shiftedIndex)
++				return 600; // Coal dust
++			else if (id == Block.blockCoal.blockID)
++				return 16600; // Coal block
++			else if (id == Item.bucketLava.shiftedIndex)
++				return 20000; // Lava bucket
++			else if (id == Item.hay.shiftedIndex)
++				return 100;
++			else if (id == Block.hayBlock.blockID)
++				return 800;
++			else // Sapling
++				return id == Block.sapling.blockID ? 100 : 0;
+ 		}
+ 	}
+ 
+--- net/minecraft/src/EntityPigZombie.java
++++ net/minecraft/src/EntityPigZombie.java
+@@ -5,7 +5,6 @@
+ public class EntityPigZombie extends EntityZombie {
+ 	private int angerLevel = 0;
+ 	private int randomSoundDelay = 0;
+-	private static final ItemStack defaultHeldItem = new ItemStack(Item.swordGold, 1);
+ 
+ 	public EntityPigZombie(World var1) {
+ 		super(var1);
+@@ -84,9 +83,5 @@
+ 
+ 	protected int getDropItemId() {
+ 		return Item.porkCooked.shiftedIndex;
+-	}
+-
+-	public ItemStack getHeldItem() {
+-		return defaultHeldItem;
+ 	}
+ }
+--- net/minecraft/src/InventorySmithResult.java
++++ net/minecraft/src/InventorySmithResult.java
+@@ -14,7 +14,8 @@
+             ItemStack result = this.smithResult[0];
+             this.smithResult[0] = null;
+             return result;
+-        } else { return null; }
++        }
++        return null;
+     }
+ 
+     public void setInventorySlotContents(int index, ItemStack item) {
+--- net/minecraft/src/ChunkProviderGenerate.java
++++ net/minecraft/src/ChunkProviderGenerate.java
+@@ -397,7 +397,21 @@
+ 			var14 = var4 + this.rand.nextInt(16);
+ 			var15 = this.rand.nextInt(16);
+ 			var16 = var5 + this.rand.nextInt(16);
+-			(new WorldGenMinable(Block.oreDiamond.blockID, 7)).generate(this.worldObj, this.rand, var14, var15, var16);
++			(new WorldGenMinable(Block.oreDiamond.blockID, 2)).generate(this.worldObj, this.rand, var14, var15, var16);
++		}
++
++		for (var13 = 0; var13 < 1; ++var13) {
++			var14 = var4 + this.rand.nextInt(16);
++			var15 = this.rand.nextInt(16);
++			var16 = var5 + this.rand.nextInt(16);
++			(new WorldGenMinable(Block.oreEmerald.blockID, 1)).generate(this.worldObj, this.rand, var14, var15, var16);
++		}
++
++		for (var13 = 0; var13 < 1; ++var13) {
++			var14 = var4 + this.rand.nextInt(16);
++			var15 = this.rand.nextInt(16);
++			var16 = var5 + this.rand.nextInt(16);
++			(new WorldGenMinable(Block.oreRuby.blockID, 1)).generate(this.worldObj, this.rand, var14, var15, var16);
+ 		}
+ 
+ 		for(var13 = 0; var13 < 1; ++var13) {
+--- net/minecraft/src/GuiContainer.java
++++ net/minecraft/src/GuiContainer.java
+@@ -69,8 +69,83 @@
+ 				var9 = var1 - var4 + 12;
+ 				var10 = var2 - var5 - 12;
+ 				int var11 = this.fontRenderer.getStringWidth(var13);
+-				this.drawGradientRect(var9 - 3, var10 - 3, var9 + var11 + 3, var10 + 8 + 3, -1073741824, -1073741824);
++
++				// drawing item name and stats
++				PurMath m = new PurMath();
++
++				ItemStack stack = var6.getStack();
++				Item item = stack.getItem();
++				int yOffset = var10 + 11;
++				int xOffset = this.fontRenderer.getStringWidth(var13);
++				int yOffsetDmg = 0;
++				int yOffsetDur = 0;
++				int yOffsetFood = 0;
++
++				boolean showDmg = item.getDmg() > 1;
++				boolean showDur = item.getMaxDamage() > 0;
++
++				boolean showFood = item instanceof ItemFood;
++
++				if (!showFood && showDmg || showDur) {
++					boolean dmg = false;
++					boolean dur = false;
++
++					int durLength = 0;
++					int dmgLength = 0;
++
++					if (showDmg) {
++						dmg = true;
++
++						dmgLength = this.fontRenderer.getStringWidth(item.getDamage(0) + item.getDamage(1));
++
++						yOffsetDmg = yOffset;
++						yOffset += 11;
++						xOffset = m.max2(var11, dmgLength);
++					}
++
++					if (showDur) {
++						dur = true;
++
++						durLength = this.fontRenderer.getStringWidth(stack.getDur(0) + stack.getDur(1));
++
++						yOffsetDur = yOffset;
++						yOffset += 11;
++						xOffset = m.max2(var11, durLength);
++					}
++
++					if (showDmg && showDur) {
++						xOffset = m.max3(var11, dmgLength, durLength);
++					}
++				}
++				else if (showFood) {
++					yOffsetFood = yOffset;
++					yOffset += 11;
++
++					xOffset = m.max2(this.fontRenderer.getStringWidth(((ItemFood)item).getHeal(0)) +
++									 this.fontRenderer.getStringWidth(((ItemFood)item).getHeal(1)),
++									 var11);
++				}
++				this.drawGradientRect(var9 - 3, var10 - 3, var9 + xOffset + 3, yOffset, -1073741824, -1073741824);
++
+ 				this.fontRenderer.drawStringWithShadow(var13, var9, var10, -1);
++				if (showDmg) {
++					this.fontRenderer.drawStringWithShadow(item.getDamage(0), var9, yOffsetDmg, 0xACACAC);
++					this.fontRenderer.drawStringWithShadow(item.getDamage(1),
++														   var9 + this.fontRenderer.getStringWidth(item.getDamage(0)),
++														   yOffsetDmg, 0x9FFF9F);
++				}
++				if (showDur) {
++					this.fontRenderer.drawStringWithShadow(stack.getDur(0), var9, yOffsetDur, 0xACACAC);
++					this.fontRenderer.drawStringWithShadow(stack.getDur(1),
++														   var9 + this.fontRenderer.getStringWidth(stack.getDur(0)),
++														   yOffsetDur, 0x9F9FFF);
++				}
++				if (showFood) {
++					this.fontRenderer.drawStringWithShadow(((ItemFood)item).getHeal(0), var9, yOffsetFood, 0xACACAC);
++					this.fontRenderer.drawStringWithShadow(((ItemFood)item).getHeal(1),
++														   var9 + this.fontRenderer.getStringWidth(((ItemFood)item).getHeal(0)),
++														   yOffsetFood, 0x9FFF9F);
++				}
+ 			}
+ 		}
+ 
+--- /dev/null
++++ net/minecraft/src/BlockGrapes.java
+@@ -1,0 +1,103 @@
++package net.minecraft.src;
++
++import java.util.Random;
++
++public class BlockGrapes extends Block {
++  public boolean graphicsLevel;
++  private int baseIndexInPNG;
++  private int indexOffset;
++
++  protected BlockGrapes(int id, int index) {
++    super(id, Material.leaves);
++    this.baseIndexInPNG = index;
++    this.blockIndexInTexture = index;
++    this.indexOffset = 0;
++    this.setTickOnLoad(true);
++  }
++
++  private boolean isGrown(World w, int x, int y, int z) {
++    return w.getBlockMetadata(x, y, z) == 1 ? true : false;
++  }
++
++  public int getBlockTextureFromSideAndMetadata(int facing, int metadata) {
++    return this.baseIndexInPNG + this.indexOffset + metadata;
++  }
++
++  public int quantityDropped(Random rand) {
++    return rand.nextInt(10) == 0 ? 1 : 0;
++  }
++
++  public int idDropped(int i, Random rand) {
++    return Block.grapeBushSapling.blockID;
++  }
++
++  public boolean isOpaqueCube() {
++    return !this.graphicsLevel;
++  }
++
++  public void setGraphicsLevel(boolean gl) {
++    this.graphicsLevel = gl;
++    this.indexOffset = gl ? 0 : 2;
++  }
++
++  public void harvestBlock(World w, EntityPlayer ply, int x, int y, int z, int a) {
++    if (!w.multiplayerWorld) {
++      Random rand = new Random();
++
++      if (ply.getCurrentEquippedItem() != null &&
++          ply.getCurrentEquippedItem().itemID == Item.shears.shiftedIndex) {
++        ply.addStat(StatList.mineBlockStatArray[this.blockID], 1);
++        this.dropBlockAsItem_do(w, x, y, z, new ItemStack(Block.grapeLeaves.blockID, 1, 0));
++      }
++      else {
++        if (rand.nextInt(10) == 0) {
++          EntityItem sapling = new EntityItem(w, (double)x, (double)y, (double)z, new ItemStack(Block.grapeBushSapling));
++          sapling.delayBeforeCanPickup = 10;
++          w.entityJoinedWorld(sapling);
++        }
++      }
++
++      if (this.isGrown(w, x, y, z)) {
++        EntityItem grapes = new EntityItem(w, (double)x, (double)y, (double)z, new ItemStack(Item.grape, 1 + rand.nextInt(4)));
++        grapes.delayBeforeCanPickup = 10;
++        w.entityJoinedWorld(grapes);
++      }
++    }
++    else {
++      super.harvestBlock(w, ply, x, y, z, a);
++    }
++  }
++
++  public void updateTick(World w, int x, int y, int z, Random rand) {
++    super.updateTick(w, x, y, z, rand);
++    if (!this.isGrown(w, x, y, z) && (w.getBlockLightValue(x, y + 1, z) >= 9 || getIsBlockSolid(w, x, y, z, 0)) && rand.nextInt(50) == 0) {
++      w.setBlockMetadataWithNotify(x, y, z, 1);
++    }
++  }
++
++  public void onBlockClicked(World w, int x, int y, int z, EntityPlayer ply) {
++    this.blockActivated(w, x, y, z, ply);
++  }
++
++  public boolean blockActivated(World w, int x, int y, int z, EntityPlayer ply) {
++    if (!w.multiplayerWorld && this.isGrown(w, x, y, z)) {
++      Random rand = new Random();
++
++      EntityItem grapes = new EntityItem(w, ply.posX, ply.posY - 1.0F, ply.posZ, new ItemStack(Item.grape, 1 + rand.nextInt(4)));
++      grapes.delayBeforeCanPickup = 0;
++      w.entityJoinedWorld(grapes);
++      w.setBlockMetadataWithNotify(x, y, z, 0);
++      return true;
++    }
++    return false;
++  }
++
++  public void fertilize(World w, int x, int y, int z) {
++    w.setBlockMetadataWithNotify(x, y, z, 1);
++  }
++
++  public boolean shouldSideBeRendered(IBlockAccess w, int x, int y, int z, int a) {
++    int id = w.getBlockId(x, y, z);
++    return !this.graphicsLevel && id == this.blockID ? false : super.shouldSideBeRendered(w, x, y, z, a);
++  }
++}
+--- net/minecraft/src/RecipesPurity.java
++++ net/minecraft/src/RecipesPurity.java
+@@ -65,9 +65,8 @@
+ 
+     private void addSlotsRecipes(CraftingManager mgr) {
+         mgr.addRecipe(new ItemStack(Item.upgradeSlot, 1, 0),
+-                      new Object[]{"###", "#D#", "###",
+-                                   Character.valueOf('#'), Block.stone,
+-                                   Character.valueOf('D'), Item.diamondShard});
++                      new Object[]{"###", "# #", "###",
++                                   Character.valueOf('#'), Block.stone});
+         mgr.addShapelessRecipe(new ItemStack(Item.upgradeSlot, 1, 1),
+                                new Object[]{
+                                    new ItemStack(Item.upgradeSlot, 1, 0),
+@@ -86,15 +85,13 @@
+         mgr.addRecipe(new ItemStack(Item.diamond),
+                       new Object[]{"##", "##",
+                                    Character.valueOf('#'), Item.diamondShard});
+-
+-        System.out.println("Shards Recipes added...");
+     }
+ 
+     private void addHammersRecipes(CraftingManager mgr) {
+         mgr.addRecipe(new ItemStack(Item.stoneHammer),
+                       new Object[]{"###", "###", " / ",
+                                    Character.valueOf('#'), Block.cobblestone,
+-                                   Character.valueOf('#'), Item.stick});
++                                   Character.valueOf('/'), Item.stick});
+         mgr.addRecipe(new ItemStack(Item.ironHammer),
+                       new Object[]{"###", "###", " / ",
+                                    Character.valueOf('#'), Item.ingotIron,
+@@ -122,6 +119,10 @@
+                       new Object[]{"  #", " / ", "/  ",
+                                    Character.valueOf('#'), Item.rock,
+                                    Character.valueOf('/'), Item.stick});
++        mgr.addRecipe(new ItemStack(Item.knife),
++                      new Object[]{"# ", " @",
++                                   Character.valueOf('#'), Item.rock,
++                                   Character.valueOf('@'), Item.stick});
+     }
+ 
+     private void addUpgradingArmorRecipes(CraftingManager mgr) {
+@@ -256,7 +257,7 @@
+ 
+         // Cobblestone (from rocks)
+         mgr.addRecipe(new ItemStack(Block.cobblestone),
+-                      new Object[]{"###", "###", "###",
++                      new Object[]{"##", "##",
+                                    Character.valueOf('#'), Item.rock});
+ 
+         // Smithing table
+@@ -275,6 +276,12 @@
+                       new Object[]{"###", "###", "###",
+                                    Character.valueOf('#'), Item.coal});
+ 
++        // Grape Bush Sapling
++        mgr.addShapelessRecipe(new ItemStack(Block.grapeBushSapling, 1),
++                               new Object[]{
++                                   new ItemStack(Item.grape, 1, 0),
++                                   new ItemStack(Item.dyePowder, 1, 15)});
++
+         // Fertilizer
+         mgr.addShapelessRecipe(new ItemStack(Item.fertilizer, 4),
+                                new Object[]{
+@@ -282,5 +289,63 @@
+                                    new ItemStack(Item.wheat),
+                                    new ItemStack(Item.sugar),
+                                    new ItemStack(Item.clay)});
++
++        // Grindstone
++        mgr.addRecipe(new ItemStack(Block.grindstone),
++                      new Object[]{"XXX", "###", "@@@",
++                                   Character.valueOf('X'), Item.leather,
++                                   Character.valueOf('#'), Block.cobblestone,
++                                   Character.valueOf('@'), Block.planks});
++
++        // Mossy cobblestone
++        mgr.addRecipe(new ItemStack(Block.cobblestoneMossy),
++                      new Object[]{" X ", "X#X", " X ",
++                                   Character.valueOf('X'), Item.seeds,
++                                   Character.valueOf('#'), Block.cobblestone});
++
++        // Bed
++        mgr.addRecipe(new ItemStack(Item.bed),
++                      new Object[]{"XX$", "###",
++                                   Character.valueOf('X'), Item.cloth,
++                                   Character.valueOf('$'), Item.pillow,
++                                   Character.valueOf('#'), Block.planks});
++
++        // Pillow
++        mgr.addRecipe(new ItemStack(Item.pillow),
++                      new Object[]{"X#X", "#$#", "X#X",
++                                   Character.valueOf('X'), Item.silk,
++                                   Character.valueOf('#'), Block.cloth,
++                                   Character.valueOf('$'), Block.hayBlock});
++
++        // Hay block
++        mgr.addRecipe(new ItemStack(Block.hayBlock),
++                      new Object[]{"##", "##",
++                                   Character.valueOf('#'), Item.hay});
++
++        // Carved Planks
++        mgr.addRecipe(new ItemStack(Block.carvedPlanks, 2),
++                      new Object[]{"# ", " #",
++                                   Character.valueOf('#'), Block.planks});
++
++        // Stone bricks
++        mgr.addRecipe(new ItemStack(Block.stoneBricks, 4),
++                      new Object[]{"##", "##",
++                                   Character.valueOf('#'), Block.smoothStone});
++
++        // Stone slabs
++        mgr.addRecipe(new ItemStack(Block.stairSingle, 3),
++                      new Object[]{"###",
++                                   Character.valueOf('#'), Block.smoothStone});
++
++        // Bottle
++        mgr.addRecipe(new ItemStack(Item.bottle, 3),
++                      new Object[]{"# #", " # ",
++                                   Character.valueOf('#'), Block.glass});
++
++        // Barrel
++        mgr.addRecipe(new ItemStack(Block.barrel, 1),
++                      new Object[]{"#@#", "# #", "#@#",
++                                   Character.valueOf('#'), Block.wood,
++                                   Character.valueOf('@'), Block.planks});
+     }
+ }
+--- net/minecraft/src/RecipesArmor.java
++++ net/minecraft/src/RecipesArmor.java
+@@ -1,18 +1,19 @@
+ package net.minecraft.src;
+-
+ public class RecipesArmor {
+-	private String[][] recipePatterns = new String[][]{{"XXX", "X X"}, {"X X", "XXX", "XXX"}, {"XXX", "X X", "X X"}, {"X X", "X X"}};
+-	private Object[][] recipeItems = new Object[][]{{Item.leather, Block.fire, Item.ingotIron, Item.diamond, Item.ingotGold}, {Item.helmetLeather, Item.helmetChain, Item.helmetSteel, Item.helmetDiamond, Item.helmetGold}, {Item.plateLeather, Item.plateChain, Item.plateSteel, Item.plateDiamond, Item.plateGold}, {Item.legsLeather, Item.legsChain, Item.legsSteel, Item.legsDiamond, Item.legsGold}, {Item.bootsLeather, Item.bootsChain, Item.bootsSteel, Item.bootsDiamond, Item.bootsGold}};
+-
+-	public void addRecipes(CraftingManager var1) {
+-		for(int var2 = 0; var2 < this.recipeItems[0].length; ++var2) {
+-			Object var3 = this.recipeItems[0][var2];
+-
+-			for(int var4 = 0; var4 < this.recipeItems.length - 1; ++var4) {
+-				Item var5 = (Item)this.recipeItems[var4 + 1][var2];
+-				var1.addRecipe(new ItemStack(var5), new Object[]{this.recipePatterns[var4], Character.valueOf('X'), var3});
+-			}
++    /*
++      private String[][] recipePatterns = new String[][]{{"XXX", "X X"}, {"X X", "XXX", "XXX"}, {"XXX", "X X", "X X"}, {"X X", "X X"}};
++      private Object[][] recipeItems = new Object[][]{{Item.leather, Block.fire, Item.ingotIron, Item.diamond, Item.ingotGold}, {Item.helmetLeather, Item.helmetChain, Item.helmetSteel, Item.helmetDiamond, Item.helmetGold}, {Item.plateLeather, Item.plateChain, Item.plateSteel, Item.plateDiamond, Item.plateGold}, {Item.legsLeather, Item.legsChain, Item.legsSteel, Item.legsDiamond, Item.legsGold}, {Item.bootsLeather, Item.bootsChain, Item.bootsSteel, Item.bootsDiamond, Item.bootsGold}};
++
++      public void addRecipes(CraftingManager var1) {
++      for(int var2 = 0; var2 < this.recipeItems[0].length; ++var2) {
++        Object var3 = this.recipeItems[0][var2];
++
++        for(int var4 = 0; var4 < this.recipeItems.length - 1; ++var4) {
++        Item var5 = (Item)this.recipeItems[var4 + 1][var2];
++        var1.addRecipe(new ItemStack(var5), new Object[]{this.recipePatterns[var4], Character.valueOf('X'), var3});
++        }
+ 		}
+ 
+-	}
++        }
++    */
+ }
+--- net/minecraft/src/EnumSmithingSlotType.java
++++ /dev/null
+@@ -1,5 +1,0 @@
+-package net.minecraft.src;
+-
+-public enum EnumSmithingSlotType {
+-    UPGRADE, ARMOR, RESULT;
+-}
+--- net/minecraft/src/ContainerPlayer.java
++++ net/minecraft/src/ContainerPlayer.java
+@@ -5,11 +5,14 @@
+ 	public IInventory craftResult;
+ 	public boolean isSinglePlayer;
+ 
++	public InventoryPlayer playerInventory;
++
+ 	public ContainerPlayer(InventoryPlayer var1) {
+ 		this(var1, true);
+ 	}
+ 
+ 	public ContainerPlayer(InventoryPlayer var1, boolean var2) {
++		this.playerInventory = var1;
+ 		this.craftMatrix = new InventoryCrafting(this, 2, 2);
+ 		this.craftResult = new InventoryCraftResult();
+ 		this.isSinglePlayer = false;
+--- net/minecraft/src/GuiOptions.java
++++ net/minecraft/src/GuiOptions.java
+@@ -29,6 +29,7 @@
+ 			++var2;
+ 		}
+ 
++		this.controlList.add(new GuiButton(102, this.width / 2 - 100, this.height / 6 + 72 + 12, var1.translateKey("options.guiSettings")));
+ 		this.controlList.add(new GuiButton(101, this.width / 2 - 100, this.height / 6 + 96 + 12, var1.translateKey("options.video")));
+ 		this.controlList.add(new GuiButton(100, this.width / 2 - 100, this.height / 6 + 120 + 12, var1.translateKey("options.controls")));
+ 		this.controlList.add(new GuiButton(200, this.width / 2 - 100, this.height / 6 + 168, var1.translateKey("gui.done")));
+@@ -39,6 +40,11 @@
+ 			if(var1.id < 100 && var1 instanceof GuiSmallButton) {
+ 				this.options.setOptionValue(((GuiSmallButton)var1).returnEnumOptions(), 1);
+ 				var1.displayString = this.options.getKeyBinding(EnumOptions.getEnumOptions(var1.id));
++			}
++
++			if (var1.id == 102) {
++				this.mc.gameSettings.saveOptions();
++				this.mc.displayGuiScreen(new GuiGuiSettings(this, this.options));
+ 			}
+ 
+ 			if(var1.id == 101) {
+--- net/minecraft/src/ItemHammer.java
++++ net/minecraft/src/ItemHammer.java
+@@ -18,7 +18,10 @@
+         item.damageItem(2, ent);
+         return true;
+     }
++    public boolean onBlockDestroyed(ItemStack item, int x, int y, int z, int a, EntityLiving ent) {
++        item.damageItem(4, ent);
++        return true;
++    }
+     public int getDamageVsEntity(Entity ent) { return this.damageVsEntity; }
+-
+     public int getDmg() { return this.damageVsEntity; }
+ }
+--- net/minecraft/src/EntityPlayerSP.java
++++ net/minecraft/src/EntityPlayerSP.java
+@@ -122,6 +122,14 @@
+ 		this.mc.displayGuiScreen(new GuiCrafting(this.inventory, this.worldObj, var1, var2, var3));
+ 	}
+ 
++	public void displaySmithingGUI(int var1, int var2, int var3) {
++		this.mc.displayGuiScreen(new GuiSmithing(this.inventory, this.worldObj, var1, var2, var3));
++	}
++
++	public void displayGrindstoneGUI(int var1, int var2, int var3) {
++		this.mc.displayGuiScreen(new GuiGrindstone(this.inventory, this.worldObj, var1, var2, var3));
++	}
++
+ 	public void displayGUIFurnace(TileEntityFurnace var1) {
+ 		this.mc.displayGuiScreen(new GuiFurnace(this.inventory, var1));
+ 	}
+@@ -130,8 +138,13 @@
+ 		this.mc.displayGuiScreen(new GuiDispenser(this.inventory, var1));
+ 	}
+ 
++	public void displayGUIBarrel(TileEntityBarrel ent) {
++		this.mc.displayGuiScreen(new GuiBarrel(this.inventory, ent));
++	}
++
+ 	public void onItemPickup(Entity var1, int var2) {
+ 		this.mc.effectRenderer.addEffect(new EntityPickupFX(this.mc.theWorld, var1, this, -0.5F));
++		this.mc.ingameGUI.setItemToRender(var1, var2);
+ 	}
+ 
+ 	public int getPlayerArmorValue() {
+--- net/minecraft/src/InventoryCrafting.java
++++ net/minecraft/src/InventoryCrafting.java
+@@ -12,6 +12,13 @@
+ 		this.field_21104_b = var2;
+ 	}
+ 
++	public void makeSlotEmpty(int x, int y) {
++		if (x >= 0 && x < this.field_21104_b) {
++			int id = x + y * this.field_21104_b;
++			if (id < this.getSizeInventory()) this.stackList[id] = null;
++		}
++	}
++
+ 	public int getSizeInventory() {
+ 		return this.stackList.length;
+ 	}
+--- net/minecraft/src/ItemStack.java
++++ net/minecraft/src/ItemStack.java
+@@ -37,6 +37,12 @@
+ 		this.itemDamage = var3;
+ 	}
+ 
++	public ItemStack() {
++		this.stackSize = 0;
++		this.itemID = 0;
++		this.itemDamage = 0;
++	}
++
+ 	public ItemStack(NBTTagCompound var1) {
+ 		this.stackSize = 0;
+ 		this.readFromNBT(var1);
+@@ -113,6 +119,17 @@
+ 		return this.itemDamage;
+ 	}
+ 
++	public String getDur(int i) {
++		String name = "Durability: ";
++		String value = String.valueOf(this.getItemDurability());
++		String[] ret = new String[]{name, value};
++		return ret[i];
++	}
++
++	public int getItemDurability() {
++		return this.getItem().getMaxDamage() - this.itemDamage;
++	}
++
+ 	public void setItemDamage(int var1) {
+ 		this.itemDamage = var1;
+ 	}
+@@ -212,7 +229,15 @@
+ 		Item.itemsList[this.itemID].onCreated(this, var1, var2);
+ 	}
+ 
++	public void onSmithing(World world, EntityPlayer ply) {
++		Item.itemsList[this.itemID].onCreated(this, world, ply);
++	}
++
+ 	public boolean isStackEqual(ItemStack var1) {
+ 		return this.itemID == var1.itemID && this.stackSize == var1.stackSize && this.itemDamage == var1.itemDamage;
+ 	}
++
++	public int getStackSize() { return this.stackSize; }
++
++	public boolean hasItem() { return this.stackSize > 0; }
+ }
+--- net/minecraft/src/ItemMelee.java
++++ net/minecraft/src/ItemMelee.java
+@@ -24,7 +24,7 @@
+ 
+     public float getStrVsBlock(ItemStack item, Block block) {
+         return
+-            item.itemID == Item.ironSword.shiftedIndex &&
++            (item.itemID == Item.ironSword.shiftedIndex || item.itemID == Item.knife.shiftedIndex) &&
+             block.blockID == Block.web.blockID ? 15.0F : 1.5F;
+     }
+ 
+--- net/minecraft/src/NetClientHandler.java
++++ net/minecraft/src/NetClientHandler.java
+@@ -338,6 +338,10 @@
+ 		if(var2 != null) {
+ 			this.worldClient.playSoundAtEntity(var2, "random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+ 			this.mc.effectRenderer.addEffect(new EntityPickupFX(this.mc.theWorld, var2, (Entity)var3, -0.5F));
++			if (var2 instanceof EntityItem) {
++				this.mc.ingameGUI.setItemToRender((EntityItem)var2, ((EntityItem)var2).item.stackSize);
++			}
++
+ 			this.worldClient.removeEntityFromWorld(var1.collectedEntityId);
+ 		}
+ 
+@@ -484,24 +488,46 @@
+ 	}
+ 
+ 	public void func_20087_a(Packet100OpenWindow var1) {
+-		if(var1.inventoryType == 0) {
+-			InventoryBasic var2 = new InventoryBasic(var1.windowTitle, var1.slotsCount);
+-			this.mc.thePlayer.displayGUIChest(var2);
+-			this.mc.thePlayer.craftingInventory.windowId = var1.windowId;
+-		} else if(var1.inventoryType == 2) {
+-			TileEntityFurnace var3 = new TileEntityFurnace();
+-			this.mc.thePlayer.displayGUIFurnace(var3);
+-			this.mc.thePlayer.craftingInventory.windowId = var1.windowId;
+-		} else if(var1.inventoryType == 3) {
+-			TileEntityDispenser var4 = new TileEntityDispenser();
+-			this.mc.thePlayer.displayGUIDispenser(var4);
+-			this.mc.thePlayer.craftingInventory.windowId = var1.windowId;
+-		} else if(var1.inventoryType == 1) {
+-			EntityPlayerSP var5 = this.mc.thePlayer;
+-			this.mc.thePlayer.displayWorkbenchGUI(MathHelper.floor_double(var5.posX), MathHelper.floor_double(var5.posY), MathHelper.floor_double(var5.posZ));
+-			this.mc.thePlayer.craftingInventory.windowId = var1.windowId;
++		switch (var1.inventoryType) {
++		case 0:
++			InventoryBasic chestInv = new InventoryBasic(var1.windowTitle, var1.slotsCount);
++			this.mc.thePlayer.displayGUIChest(chestInv);
++			this.mc.thePlayer.craftingInventory.windowId = var1.windowId;
++			break;
++		case 1: {
++			EntityPlayerSP ply = this.mc.thePlayer;
++			this.mc.thePlayer.displayWorkbenchGUI(MathHelper.floor_double(ply.posX), MathHelper.floor_double(ply.posY), MathHelper.floor_double(ply.posZ));
++			this.mc.thePlayer.craftingInventory.windowId = var1.windowId;
++		} break;
++		case 2:
++			TileEntityFurnace furnace = new TileEntityFurnace();
++			this.mc.thePlayer.displayGUIFurnace(furnace);
++			this.mc.thePlayer.craftingInventory.windowId = var1.windowId;
++			break;
++		case 3:
++			TileEntityDispenser dispenser = new TileEntityDispenser();
++			this.mc.thePlayer.displayGUIDispenser(dispenser);
++			this.mc.thePlayer.craftingInventory.windowId = var1.windowId;
++			break;
++		case 4: {
++			EntityPlayerSP ply = this.mc.thePlayer;
++			this.mc.thePlayer.displaySmithingGUI(MathHelper.floor_double(ply.posX), MathHelper.floor_double(ply.posY), MathHelper.floor_double(ply.posZ));
++			this.mc.thePlayer.craftingInventory.windowId = var1.windowId;
++		} break;
++		case 5: {
++			EntityPlayerSP ply = this.mc.thePlayer;
++			this.mc.thePlayer.displayGrindstoneGUI(MathHelper.floor_double(ply.posX), MathHelper.floor_double(ply.posY), MathHelper.floor_double(ply.posZ));
++			this.mc.thePlayer.craftingInventory.windowId = var1.windowId;
++		} break;
++		case 6:
++			TileEntityBarrel barrel = new TileEntityBarrel();
++			this.mc.thePlayer.displayGUIBarrel(barrel);
++			this.mc.thePlayer.craftingInventory.windowId = var1.windowId;
++			break;
++		default:
++			// Do nothing
++			break;
+ 		}
+-
+ 	}
+ 
+ 	public void func_20088_a(Packet103SetSlot var1) {
+--- net/minecraft/src/StringTranslate.java
++++ net/minecraft/src/StringTranslate.java
+@@ -31,6 +31,13 @@
+ 	}
+ 
+ 	public String translateNamedKey(String var1) {
++		switch (var1) {
++		case "item.ironChest":
++		case "item.ironHelmet":
++		case "item.ironLegs":
++		case "item.ironBoots":
++			return this.translateTable.getProperty(var1 + ".name", "") + "*";
++		}
+ 		return this.translateTable.getProperty(var1 + ".name", "");
+ 	}
+ }
+--- /dev/null
++++ net/minecraft/src/BlockBarrel.java
+@@ -1,0 +1,58 @@
++package net.minecraft.src;
++
++import java.util.Random;
++
++public class BlockBarrel extends BlockContainer {
++  private Random rand = new Random();
++
++  protected BlockBarrel(int id) {
++    super(id, Material.wood);
++    this.blockIndexInTexture = 153;
++  }
++
++  protected TileEntity getBlockEntity() {
++    return new TileEntityBarrel();
++  }
++
++  public int getBlockTextureFromSide(int facing) {
++    return facing == 1 ? this.blockIndexInTexture + 2
++      : (facing == 0 ? this.blockIndexInTexture + 1 : this.blockIndexInTexture);
++  }
++
++  public boolean blockActivated(World w, int x, int y, int z, EntityPlayer ply) {
++    if (!w.multiplayerWorld) {
++      TileEntityBarrel barrel = (TileEntityBarrel)w.getBlockTileEntity(x, y, z);
++      ply.displayGUIBarrel(barrel);
++    }
++
++    return true;
++  }
++
++  public void onBlockRemoval(World w, int x, int y, int z) {
++    TileEntityBarrel ent = (TileEntityBarrel)w.getBlockTileEntity(x, y, z);
++
++    for (int i = 0; i < ent.getSizeInventory(); i++) {
++      ItemStack item = ent.getStackInSlot(i);
++      if (item != null) {
++        float a = this.rand.nextFloat() * 0.8F + 0.1F;
++        float b = this.rand.nextFloat() * 0.8F + 0.1F;
++        float c = this.rand.nextFloat() * 0.8F + 0.1F;
++
++        while (item.stackSize > 0) {
++          int size = this.rand.nextInt(21) + 10;
++          if (size > item.stackSize) size = item.stackSize;
++          item.stackSize -= size;
++
++          EntityItem dropped = new EntityItem(w, (double)((float)x + a), (double)((float)y + b), (double)((float)z + c), new ItemStack(item.itemID, size, item.getItemDamage()));
++          float vel = 0.05F;
++          dropped.motionX = (double)((float)this.rand.nextGaussian() * vel);
++          dropped.motionY = (double)((float)this.rand.nextGaussian() * vel + 0.2F);
++          dropped.motionZ = (double)((float)this.rand.nextGaussian() * vel);
++          w.entityJoinedWorld(dropped);
++        }
++      }
++    }
++
++    super.onBlockRemoval(w, x, y, z);
++  }
++}
+--- net/minecraft/src/EntitySpear.java
++++ /dev/null
+@@ -1,202 +1,0 @@
+-/*
+-package net.minecraft.src;
+-
+-import java.util.List;
+-
+-public class EntitySpear extends Entity {
+-    private int xTile = -1;
+-    private int yTile = -1;
+-    private int zTile = -1;
+-    private int inTile = 0;
+-    private int que1 = 0;
+-    private boolean inGround = false;
+-    public int spearShake = 0;
+-    public EntityLiving owner;
+-    private int ticksInGround;
+-    private int ticksInAir = 0;
+-
+-    public EntitySpear(World w) {
+-        super(w);
+-        this.setSize(0.5F, 0.5F);
+-    }
+-
+-    public EntitySpear(World w, double sx, double sy, double sz) {
+-        super(w);
+-        this.setSize(0.5F, 0.5F);
+-        this.setPosition(sx, sy, sz);
+-        this.yOffset = 0.0F;
+-    }
+-
+-    public EntitySpear(World w, EntityLiving ent) {
+-        super(w);
+-        this.owner = ent;
+-        this.setSize(0.5F, 0.5F);
+-        this.setLocationAndAngles(ent.posX, ent.posY + (double)ent.getEyeHeight(),
+-                                  ent.posZ, ent.rotationYaw, ent.rotationPitch);
+-        this.posX -= (double)(MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI) * 0.16F);
+-        this.posY -= (double)0.1F;
+-        this.posZ -= (double)(MathHelper.sin(this.rotationYaw / 180.0F * (float)Math.PI) * 0.16F);
+-        this.setPosition(this.posX, this.posY, this.posZ);
+-        this.yOffset = 0.0F;
+-        this.motionX =
+-            (double)(-MathHelper.sin(this.rotationYaw / 180.0F * (float)Math.PI)
+-                     * MathHelper.cos(this.rotationPitch / 180.0F * (float)Math.PI));
+-        this.motionY =
+-            (double)(MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI)
+-                     * MathHelper.cos(this.rotationPitch / 180.0F * (float)Math.PI));
+-        this.motionZ =
+-            (double)(-MathHelper.sin(this.rotationPitch / 180.0F * (float)Math.PI));
+-        this.setArrowHeading(this.motionX, this.motionY, this.motionZ, 1.5F, 1.0F);
+-    }
+-
+-    protected void entityInit() {}
+-
+-    public void setArrowHeading(double dx, double dy, double dz, float q1, float q2) {
+-        float len = MathHelper.sqrt_double(dx * dx + dy * dy + dz * dz);
+-        dx /= (double)len;
+-        dy /= (double)len;
+-        dz /= (double)len;
+-        dx += this.rand.nextGaussian() * (double)0.0075F * (double)q2;
+-        dy += this.rand.nextGaussian() * (double)0.0075F * (double)q2;
+-        dz += this.rand.nextGaussian() * (double)0.0075F * (double)q2;
+-        dx *= (double)q1;
+-        dy *= (double)q1;
+-        dz *= (double)q1;
+-        this.motionX = dx;
+-        this.motionY = dy;
+-        this.motionZ = dz;
+-        float len2 = MathHelper.sqrt_double(dx * dx + dz * dz);
+-        this.prevRotationYaw = this.rotationYaw =
+-            (float)(Math.atan2(dx, dz) * 180.0D / (double)((float)Math.PI));
+-        this.prevRotationPitch = this.rotationPitch =
+-            (float)(Math.atan2(dy, (double)len2) * 180.0D / (double)((float)Math.PI));
+-        this.ticksInGround = 0;
+-    }
+-
+-    public void setVelocity(double vx, double vy, double vz) {
+-        this.motionX = vx;
+-        this.motionY = vy;
+-        this.motionZ = vz;
+-        if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
+-            float len = MathHelper.sqrt_double(vx * vx + vz * vz);
+-            this.prevRotationYaw = this.rotationYaw =
+-                (float)(Math.atan2(vx, vz) * 180.0D / (double)((float)Math.PI));
+-            this.prevRotationPitch = this.rotationPitch =
+-                (float)(Math.atan2(vy, (double)len) * 180.0D / (double)((float)Math.PI));
+-            this.prevRotationYaw = this.rotationYaw;
+-            this.prevRotationPitch = this.rotationPitch;
+-            this.setLocationAndAngles(this.posX, this.posY, this.posZ,
+-                                      this.rotationYaw, this.rotationPitch);
+-            this.ticksInGround = 0;
+-        }
+-    }
+-
+-    public void onUpdate() {
+-        super.onUpdate();
+-        if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
+-            float len = MathHelper.sqrt_double(this.motionX * this.motionX +
+-                                               this.motionZ * this.motionZ);
+-            this.prevRotationYaw = this.rotationYaw =
+-                (float)(Math.atan2(this.motionX, this.motionZ) * 180.0D / (double)((float)Math.PI));
+-            this.prevRotationPitch = this.rotationPitch =
+-                (float)(Math.atan2(this.motionY, (double)len) * 180.0D / (double)((float)Math.PI));
+-        }
+-
+-        int id = this.worldObj.getBlockId(this.xTile, this.yTile, this.zTile);
+-        if (id > 0) {
+-            Block.blocksList[id]
+-                .setBlockBoundsBasedOnState(this.worldObj, this.xTile, this.yTile, this.zTile);
+-            AxisAlignedBB aabb = Block.blocksList[id]
+-                .getCollisionBoundingBoxFromPool(this.worldObj,
+-                                                 this.xTile, this.yTile, this.zTile);
+-            if (aabb != null && aabb.isVecInside(Vec3D.createVector(this.posX, this.posY, this.posZ)))
+-                this.inGround = true;
+-        }
+-
+-        if (this.spearShake > 0) this.spearShake--;
+-
+-        if (this.inGround) {
+-            id = this.worldObj.getBlockId(this.xTile, this.yTile, this.zTile);
+-            int data = this.worldObj.getBlockMetadata(this.xTile, this.yTile, this.zTile);
+-            if (id == this.inTile && data == this.que1) {
+-                ++this.ticksInGround;
+-                if (this.ticksInGround == 1200)
+-                    this.setEntityDead();
+-            }
+-            else {
+-                this.inGround = false;
+-                this.motionX *= (double)(this.rand.nextFloat() * 0.2F);
+-                this.motionY *= (double)(this.rand.nextFloat() * 0.2F);
+-                this.motionZ *= (double)(this.rand.nextFloat() * 0.2F);
+-                this.ticksInGround = 0;
+-                this.ticksInAir = 0;
+-            }
+-        }
+-        else {
+-            ++this.ticksInAir;
+-            Vec3D pVec = Vec3D.createVector(this.posX, this.posY, this.posZ);
+-            Vec3D mVec = Vec3D.createVector(this.posX + this.motionX,
+-                                            this.posY + this.motionY,
+-                                            this.posZ + this.motionZ);
+-            MovingObjectPosition mPos = this.worldObj.func_28105_a(pVec, mVec, false, true);
+-            pVec = Vec3D.createVector(this.posX, this.posY, this.posZ);
+-            mVec = Vec3D.createVector(this.posX + this.motionX,
+-                                      this.posY + this.motionY,
+-                                      this.posZ + this.motionZ);
+-            if (mPos != null)
+-                mVec = Vec3D.createVector(mPos.hitVec.xCoord, mPos.hitVec.yCoord, mPos.hitVec.zCoord);
+-
+-            Entity ent = null;
+-            List lst = this.worldObj
+-                .getEntitiesWithinAABBExcludingEntity(this,
+-                                                      this.boundingBox.addCoord(this.motionX,
+-                                                                                this.motionY,
+-                                                                                this.motionZ)
+-                                                      .expand(1.0D, 1.0D, 1.0D));
+-            double q1 = 0.0D;
+-
+-            float q2;
+-            for (int i = 0; i < lst.size(); ++i) {
+-                Entity e = (Entity)lst.get(i);
+-                if (e.canBeCollidedWith() && this.ticksInAir >= 5) {
+-                    q2 = 0.3F;
+-                    AxisAlignedBB aabb = e.boundingBox.expand((double)q2, (double)q2, (double)q2);
+-                    MovingObjectPosition mPos2 = aabb.func_1169_a(pVec, mVec);
+-                    if (mPos2 != null) {
+-                        double dist = pVec.distanceTo(mPos2.hitVec);
+-                        if (dist < q1 || q1 == 0.0D) {
+-                            ent = e;
+-                            q1 = dist;
+-                        }
+-                    }
+-                }
+-            }
+-
+-            if (ent != null)
+-                mPos = new MovingObjectPosition(ent);
+-
+-            float q3;
+-            if (mPos != null) {
+-                if (mPos.entityHit != null) {
+-                    if (mPos.entityHit.attackEntityFrom(this.owner, 4)) {
+-                        this.worldObj.playSoundAtEntity(this, "random.drr",
+-                                                        1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+-                        this.setEntityDead();
+-                    }
+-                    else {
+-                        this.motionX *= (double)-0.1F;
+-                        this.motionY *= (double)-0.1F;
+-                        this.motionZ *= (double)-0.1F;
+-                        this.rotationYaw += 180.0F;
+-                        this.prevRotationYaw += 180.0F;
+-                        this.ticksInAir = 0;
+-                    }
+-                }
+-                else {
+-
+-                }
+-            }
+-        }
+-    }
+-}
+-*/
+--- net/minecraft/src/ItemAxe.java
++++ net/minecraft/src/ItemAxe.java
+@@ -1,7 +1,7 @@
+ package net.minecraft.src;
+ 
+ public class ItemAxe extends ItemTool {
+-	private static Block[] blocksEffectiveAgainst = new Block[]{Block.planks, Block.bookShelf, Block.wood, Block.chest};
++	private static Block[] blocksEffectiveAgainst = new Block[]{Block.planks, Block.bookShelf, Block.wood, Block.chest, Block.workbench, Block.fence, Block.carvedPlanks, Block.barrel};
+ 
+ 	protected ItemAxe(int var1, EnumToolMaterial var2) {
+ 		super(var1, 3, var2, blocksEffectiveAgainst);
+--- net/minecraft/src/Block.java
++++ net/minecraft/src/Block.java
+@@ -117,6 +117,39 @@
+ 	public static final Block redstoneRepeaterActive = (new BlockRedstoneRepeater(94, true)).setHardness(0.0F).setLightValue(10.0F / 16.0F).setStepSound(soundWoodFootstep).setBlockName("diode").disableStats().disableNeighborNotifyOnMetadataChange();
+ 	public static final Block lockedChest = (new BlockLockedChest(95)).setHardness(0.0F).setLightValue(1.0F).setStepSound(soundWoodFootstep).setBlockName("lockedchest").setTickOnLoad(true).disableNeighborNotifyOnMetadataChange();
+ 	public static final Block trapdoor = (new BlockTrapDoor(96, Material.wood)).setHardness(3.0F).setStepSound(soundWoodFootstep).setBlockName("trapdoor").disableStats().disableNeighborNotifyOnMetadataChange();
++
++	/* Purity Blocks */
++	// Offset: 100
++	// Smithing table
++	public static final Block smithing = (new BlockSmithing(100)).disableStats().disableNeighborNotifyOnMetadataChange();
++
++	// Ores
++	public static final Block oreEmerald = (new BlockOre(101, 54)).setHardness(3.0F).setResistance(5.0F).setStepSound(soundStoneFootstep).setBlockName("oreEmerald");
++	public static final Block oreRuby = (new BlockOre(102, 30)).setHardness(3.0F).setResistance(5.0F).setStepSound(soundStoneFootstep).setBlockName("oreRuby");
++
++	// Coal block
++	public static final Block blockCoal = (new Block(103, 111, Material.rock)).setHardness(1.25F).setResistance(3.0F).setStepSound(soundStoneFootstep).setBlockName("blockCoal");
++
++	// Grindstone
++	public static final Block grindstone = (new BlockGrindstone(104)).disableStats().disableNeighborNotifyOnMetadataChange();
++
++	// Carved planks
++	public static final Block carvedPlanks = (new Block(105, 125, Material.wood)).setHardness(2.0F).setResistance(5.0F).setStepSound(soundWoodFootstep).setBlockName("carvedPlanks").disableNeighborNotifyOnMetadataChange();
++
++	// Smooth stone
++	public static final Block smoothStone = (new Block(106, 6, Material.rock)).setHardness(2.0F).setResistance(10.0F).setStepSound(soundStoneFootstep).setBlockName("smoothStone");
++	public static final Block stoneBricks = (new Block(107, 126, Material.rock)).setHardness(2.0F).setResistance(10.0F).setStepSound(soundStoneFootstep).setBlockName("stoneBricks");
++
++	// Hay block
++	public static final Block hayBlock = (new Block(108, 127, Material.leaves)).setHardness(0.2F).setStepSound(soundGrassFootstep).setBlockName("hayBlock");
++
++	// Grape
++	public static final Block grapeLeaves = (new BlockGrapes(109, 196)).setHardness(0.2F).setStepSound(soundGrassFootstep).setBlockName("grapeLeaves").disableNeighborNotifyOnMetadataChange();
++	public static final Block grapeBushSapling = (new BlockGrapeSapling(110)).setHardness(0.0F).setStepSound(soundGrassFootstep).setBlockName("grapeBushSapling").disableNeighborNotifyOnMetadataChange();
++
++	// Barrel
++	public static final Block barrel = (new BlockBarrel(111)).setHardness(2.0F).setResistance(5.0F).setStepSound(soundWoodFootstep).setBlockName("barrel").disableNeighborNotifyOnMetadataChange();
++
+ 	public int blockIndexInTexture;
+ 	public final int blockID;
+ 	protected float blockHardness;
+@@ -153,6 +186,19 @@
+ 			canBlockGrass[var1] = !var2.getCanBlockGrass();
+ 			isBlockContainer[var1] = false;
+ 		}
++	}
++
++	public void setGraphicsLevel(boolean gl) {
++		// does nothing, should be overriden by child block class
++	}
++
++	protected int getTextureFromCoord(int x, int y) {
++		return x + y * 16;
++	}
++
++	protected Block setTextureCoord(int x, int y) {
++		this.blockIndexInTexture = this.getTextureFromCoord(x, y);
++		return this;
+ 	}
+ 
+ 	protected Block disableNeighborNotifyOnMetadataChange() {
+--- net/minecraft/src/EntityZombie.java
++++ net/minecraft/src/EntityZombie.java
+@@ -32,6 +32,6 @@
+ 	}
+ 
+ 	protected int getDropItemId() {
+-		return Item.feather.shiftedIndex;
++		return Item.cloth.shiftedIndex;
+ 	}
+ }
+--- net/minecraft/src/BlockLeaves.java
++++ net/minecraft/src/BlockLeaves.java
+@@ -153,7 +153,7 @@
+ 	}
+ 
+ 	public int idDropped(int var1, Random var2) {
+-		return Block.sapling.blockID;
++		return var2.nextInt(5) == 0 ? Item.appleRed.shiftedIndex : Block.sapling.blockID;
+ 	}
+ 
+ 	public void harvestBlock(World var1, EntityPlayer var2, int var3, int var4, int var5, int var6) {
+--- net/minecraft/src/SlotSmithing.java
++++ net/minecraft/src/SlotSmithing.java
+@@ -2,22 +2,19 @@
+ 
+ public class SlotSmithing extends Slot {
+     private EntityPlayer thePlayer;
+-    private EnumSmithingSlotType slotType;
+     private final IInventory smithMatrix;
+ 
+     public SlotSmithing(EntityPlayer ply,
+                         IInventory inv,
+                         IInventory matrix,
+-                        int index, int x, int y,
+-                        EnumSmithingSlotType type) {
++                        int index, int x, int y) {
+         super(inv, index, x, y);
+         this.thePlayer = ply;
+-        this.slotType = type;
+         this.smithMatrix = matrix;
+     }
+ 
+     public boolean isItemValid(ItemStack item) {
+-        return this.slotType == EnumSmithingSlotType.RESULT ? false : true;
++        return false;
+     }
+ 
+     public void onPickupFromSlot(ItemStack result) {
+--- /dev/null
++++ net/minecraft/src/ItemFluid.java
+@@ -1,0 +1,13 @@
++package net.minecraft.src;
++
++public class ItemFluid extends ItemFood {
++  protected ItemFluid(int id, int heal) {
++    super(id, heal, false);
++  }
++
++  public ItemStack onItemRightClick(ItemStack item, World w, EntityPlayer ply) {
++    super.onItemRightClick(item, w, ply);
++    ply.inventory.addItemStackToInventory(new ItemStack(Item.bottle, 1));
++    return item;
++  }
++}
+--- net/minecraft/src/ItemDye.java
++++ net/minecraft/src/ItemDye.java
+@@ -39,6 +39,24 @@
+ 				return true;
+ 			}
+ 
++			if (var8 == Block.grapeLeaves.blockID) {
++				if (!var3.multiplayerWorld) {
++					((BlockGrapes)Block.grapeLeaves).fertilize(var3, var4, var5, var6);
++					--var1.stackSize;
++				}
++
++				return true;
++			}
++
++			if (var8 == Block.grapeBushSapling.blockID) {
++				if (!var3.multiplayerWorld) {
++					((BlockGrapeSapling)Block.grapeBushSapling).generateBush(var3, var4, var5, var6);
++					--var1.stackSize;
++				}
++
++				return true;
++			}
++
+ 			if(var8 == Block.grass.blockID) {
+ 				if(!var3.multiplayerWorld) {
+ 					--var1.stackSize;
+--- /dev/null
++++ net/minecraft/src/ContainerBarrel.java
+@@ -1,0 +1,76 @@
++package net.minecraft.src;
++
++public class ContainerBarrel extends Container {
++  private TileEntityBarrel barrelInventory;
++
++  public ContainerBarrel(InventoryPlayer ply, TileEntityBarrel barrel) {
++    // Add barrel slots
++    this.barrelInventory = barrel;
++    this.addSlot(new Slot(barrel, 0, 38, 17)); // Water bucket slot
++    this.addSlot(new Slot(barrel, 1, 123, 49)); // Output slot
++    this.addSlot(new Slot(barrel, 2, 123, 17)); // Ingredient slot
++
++    // Player slots
++    int i;
++    for (i = 0; i < 3; i++) {
++      for (int j = 0; j < 9; j++) {
++        this.addSlot(new Slot(ply, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
++      }
++    }
++
++    for (i = 0; i < 9; i++) {
++      this.addSlot(new Slot(ply, i, 8 + i * 18, 142));
++    }
++  }
++
++  public boolean isUsableByPlayer(EntityPlayer ply) {
++    return this.barrelInventory.canInteractWith(ply);
++  }
++
++  public ItemStack getStackInSlot(int slot) {
++    ItemStack item = null;
++    Slot s = (Slot)this.slots.get(slot);
++    if (s != null && s.getHasStack()) {
++      ItemStack slotItem = s.getStack();
++      item = slotItem.copy();
++      if (slot == 2) {
++        this.func_28125_a(slotItem, 3, 39, true);
++      }
++      else if (slot >= 3 && slot < 30) {
++        this.func_28125_a(slotItem, 30, 39, false);
++      }
++      else if (slot >= 30 && slot < 39) {
++        this.func_28125_a(slotItem, 3, 30, false);
++      }
++      else {
++        this.func_28125_a(slotItem, 3, 39, false);
++      }
++
++      if (slotItem.stackSize == 0) {
++        s.putStack((ItemStack)null);
++      }
++      else {
++        s.onSlotChanged();
++      }
++
++      if (slotItem.stackSize == item.stackSize) return null;
++
++      s.onPickupFromSlot(slotItem);
++    }
++
++    return item;
++  }
++
++  public void func_20112_a(int id, int value) {
++    switch (id) {
++    case 0:
++      this.barrelInventory.ingredientFlags = (byte)value;
++      break;
++    case 1:
++      this.barrelInventory.fluidLeft = (byte)value;
++      break;
++    default:
++      break;
++    }
++  }
++}
+--- net/minecraft/src/BlockGrass.java
++++ net/minecraft/src/BlockGrass.java
+@@ -29,7 +29,7 @@
+ 
+ 	public void updateTick(World var1, int var2, int var3, int var4, Random var5) {
+ 		if(!var1.multiplayerWorld) {
+-			if(var1.getBlockLightValue(var2, var3 + 1, var4) < 4 && Block.lightOpacity[var1.getBlockId(var2, var3 + 1, var4)] > 2) {
++			if(var1.getBlockLightValue(var2, var3 + 1, var4) < 4 && Block.lightOpacity[var1.getBlockId(var2, var3 + 1, var4)] > 2 && !getIsBlockSolid(var1, var2, var3 + 1, var4, 0)) {
+ 				if(var5.nextInt(4) != 0) {
+ 					return;
+ 				}
+--- net/minecraft/src/Slot.java
++++ net/minecraft/src/Slot.java
+@@ -14,6 +14,8 @@
+ 		this.yDisplayPosition = var4;
+ 	}
+ 
++	public int getSlotIndex() { return this.slotIndex; }
++
+ 	public void onPickupFromSlot(ItemStack var1) {
+ 		this.onSlotChanged();
+ 	}
+--- net/minecraft/src/SlotCrafting.java
++++ net/minecraft/src/SlotCrafting.java
+@@ -30,7 +30,7 @@
+ 			this.thePlayer.addStat(AchievementList.bakeCake, 1);
+ 		} else if(var1.itemID == Item.pickaxeStone.shiftedIndex) {
+ 			this.thePlayer.addStat(AchievementList.buildBetterPickaxe, 1);
+-		} else if(var1.itemID == Item.swordWood.shiftedIndex) {
++		} else if(var1.itemID == Item.mace.shiftedIndex) {
+ 			this.thePlayer.addStat(AchievementList.buildSword, 1);
+ 		}
+ 
+@@ -39,7 +39,11 @@
+ 			if(var3 != null) {
+ 				this.craftMatrix.decrStackSize(var2, 1);
+ 				if(var3.getItem().hasContainerItem()) {
+-					this.craftMatrix.setInventorySlotContents(var2, new ItemStack(var3.getItem().getContainerItem()));
++					if (var3.getItem().getMaxDamage() > 0)
++						if (var3.getItemDamage() < var3.getItem().getMaxDamage())
++							this.craftMatrix.setInventorySlotContents(var2, new ItemStack(var3.getItem().getContainerItem(), var3.getStackSize(), var3.getItemDamage() + 1));
++						else this.craftMatrix.setInventorySlotContents(var2, new ItemStack(var3.getItem(), 0));
++					else this.craftMatrix.setInventorySlotContents(var2, new ItemStack(var3.getItem().getContainerItem()));
+ 				}
+ 			}
+ 		}
+--- net/minecraft/src/GuiFurnace.java
++++ net/minecraft/src/GuiFurnace.java
+@@ -28,6 +28,9 @@
+ 			this.drawTexturedModalRect(var3 + 56, var4 + 36 + 12 - var5, 176, 12 - var5, 14, var5 + 2);
+ 		}
+ 
++		if (this.furnaceInventory.getStackInSlot(1) == null)
++			this.drawTexturedModalRect(var3 + 55, var4 + 52, this.xSize, 31, 18, 18);
++
+ 		var5 = this.furnaceInventory.getCookProgressScaled(24);
+ 		this.drawTexturedModalRect(var3 + 79, var4 + 34, 176, 14, var5 + 1, 16);
+ 	}
+--- net/minecraft/src/AchievementList.java
++++ net/minecraft/src/AchievementList.java
+@@ -21,7 +21,7 @@
+ 	public static Achievement buildBetterPickaxe = (new Achievement(9, "buildBetterPickaxe", 6, 2, Item.pickaxeStone, buildPickaxe)).registerAchievement();
+ 	public static Achievement cookFish = (new Achievement(10, "cookFish", 2, 6, Item.fishCooked, buildFurnace)).registerAchievement();
+ 	public static Achievement onARail = (new Achievement(11, "onARail", 2, 3, Block.rail, acquireIron)).setSpecial().registerAchievement();
+-	public static Achievement buildSword = (new Achievement(12, "buildSword", 6, -1, Item.swordWood, buildWorkBench)).registerAchievement();
++	public static Achievement buildSword = (new Achievement(12, "buildSword", 6, -1, Item.mace, buildWorkBench)).registerAchievement();
+ 	public static Achievement killEnemy = (new Achievement(13, "killEnemy", 8, -1, Item.bone, buildSword)).registerAchievement();
+ 	public static Achievement killCow = (new Achievement(14, "killCow", 7, -3, Item.leather, buildSword)).registerAchievement();
+ 	public static Achievement flyPig = (new Achievement(15, "flyPig", 8, -4, Item.saddle, killCow)).setSpecial().registerAchievement();
+--- net/minecraft/src/EntityLiving.java
++++ net/minecraft/src/EntityLiving.java
+@@ -296,9 +296,8 @@
+ 	public void heal(int var1) {
+ 		if(this.health > 0) {
+ 			this.health += var1;
+-			if(this.health > 20) {
++			if(this.health > 20)
+ 				this.health = 20;
+-			}
+ 
+ 			this.heartsLife = this.heartsHalvesLife / 2;
+ 		}
+--- net/minecraft/src/EnumMeleeMaterial.java
++++ net/minecraft/src/EnumMeleeMaterial.java
+@@ -4,6 +4,7 @@
+     M_BAT(110, 3),
+     M_MACE(75, 6),
+     M_SPEAR(30, 7),
++    M_KNIFE(25, 5),
+     M_SWORD(250, 8);
+ 
+     private final int maxUses;
+--- net/minecraft/src/BlockStone.java
++++ net/minecraft/src/BlockStone.java
+@@ -8,6 +8,23 @@
+ 	}
+ 
+ 	public int idDropped(int var1, Random var2) {
+-		return Block.cobblestone.blockID;
++		return Item.rock.shiftedIndex;
++	}
++
++	public void dropBlockAsItemWithChance(World var1, int var2, int var3, int var4, int var5, float var6) {
++		super.dropBlockAsItemWithChance(var1, var2, var3, var4, var5, var6);
++		if (!var1.multiplayerWorld) {
++			for (int var7 = 0; var7 < 3; ++var7) {
++				if (var1.rand.nextInt(15) <= var5) {
++					float var8 = 0.4F;
++					float var9 = var1.rand.nextFloat() * var8 + (1.0F - var8) * 0.5F;
++					float var10 = var1.rand.nextFloat() * var8 + (1.0F - var8) * 0.5F;
++					float var11 = var1.rand.nextFloat() * var8 + (1.0F - var8) * 0.5F;
++					EntityItem var12 = new EntityItem(var1, (double)((float)var2 + var9), (double)((float)var3 + var10), (double)((float)var4 + var11), new ItemStack(Item.rock));
++					var12.delayBeforeCanPickup = 10;
++					var1.entityJoinedWorld(var12);
++				}
++			}
++		}
+ 	}
+ }
+--- net/minecraft/src/RenderItem.java
++++ net/minecraft/src/RenderItem.java
+@@ -42,9 +42,9 @@
+ 			GL11.glRotatef(var12, 0.0F, 1.0F, 0.0F);
+ 			this.loadTexture("/terrain.png");
+ 			float var28 = 0.25F;
+-			if(!Block.blocksList[var10.itemID].renderAsNormalBlock() && var10.itemID != Block.stairSingle.blockID && Block.blocksList[var10.itemID].getRenderType() != 16) {
+-				var28 = 0.5F;
+-			}
++			//if(!Block.blocksList[var10.itemID].renderAsNormalBlock() && var10.itemID != Block.stairSingle.blockID && Block.blocksList[var10.itemID].getRenderType() != 16) {
++			//	var28 = 0.25F;
++			//}
+ 
+ 			GL11.glScalef(var28, var28, var28);
+ 
+--- net/minecraft/src/ItemUpgradeSlot.java
++++ net/minecraft/src/ItemUpgradeSlot.java
+@@ -1,9 +1,5 @@
+ package net.minecraft.src;
+ 
+-// Trying to guess
+-// iconindex = x * y by default
+-// iconindex = 14 * 4 by default for dye
+-
+ public class ItemUpgradeSlot extends Item {
+     public static final String[] slotTypes = new String[]{"empty", "diamond", "emerald", "ruby"};
+     public static final int[] upgradeBuffs = {0, 1, 3, 5};
+--- net/minecraft/src/BlockTallGrass.java
++++ net/minecraft/src/BlockTallGrass.java
+@@ -33,4 +33,20 @@
+ 	public int idDropped(int var1, Random var2) {
+ 		return var2.nextInt(8) == 0 ? Item.seeds.shiftedIndex : -1;
+ 	}
++
++	public void harvestBlock(World w, EntityPlayer ply, int x, int y, int z, int r) {
++		if (!w.multiplayerWorld &&
++			ply.getCurrentEquippedItem() != null &&
++			ply.getCurrentEquippedItem().itemID == Item.knife.shiftedIndex) {
++			this.dropHay(w, x, y, z);
++		}
++		else
++			super.harvestBlock(w, ply, x, y, z, r);
++	}
++
++	private void dropHay(World w, int x, int y, int z) {
++		EntityItem item = new EntityItem(w, (double)x, (double)y + 0.25D, (double)z, new ItemStack(Item.hay));
++		item.delayBeforeCanPickup = 10;
++		w.entityJoinedWorld(item);
++	}
+ }
+--- net/minecraft/src/RecipesWeapons.java
++++ net/minecraft/src/RecipesWeapons.java
+@@ -1,10 +1,11 @@
+ package net.minecraft.src;
+ 
+ public class RecipesWeapons {
+-	private String[][] recipePatterns = new String[][]{{"X", "X", "#"}};
+-	private Object[][] recipeItems = new Object[][]{{Block.planks, Block.cobblestone, Item.ingotIron, Item.diamond, Item.ingotGold}, {Item.swordWood, Item.swordStone, Item.swordSteel, Item.swordDiamond, Item.swordGold}};
++	//private String[][] recipePatterns = new String[][]{{"X", "X", "#"}};
++	//private Object[][] recipeItems = new Object[][]{{Item.ingotIron}, {Item.swordSteel}};
+ 
+ 	public void addRecipes(CraftingManager var1) {
++		/*
+ 		for(int var2 = 0; var2 < this.recipeItems[0].length; ++var2) {
+ 			Object var3 = this.recipeItems[0][var2];
+ 
+@@ -16,5 +17,6 @@
+ 
+ 		var1.addRecipe(new ItemStack(Item.bow, 1), new Object[]{" #X", "# X", " #X", Character.valueOf('X'), Item.silk, Character.valueOf('#'), Item.stick});
+ 		var1.addRecipe(new ItemStack(Item.arrow, 4), new Object[]{"X", "#", "Y", Character.valueOf('Y'), Item.feather, Character.valueOf('X'), Item.flint, Character.valueOf('#'), Item.stick});
++		*/
+ 	}
+ }
+--- net/minecraft/src/ItemFood.java
++++ net/minecraft/src/ItemFood.java
+@@ -8,13 +8,20 @@
+ 		super(var1);
+ 		this.healAmount = var2;
+ 		this.isWolfsFavoriteMeat = var3;
+-		this.maxStackSize = 1;
++		this.maxStackSize = 16;
+ 	}
+ 
+ 	public ItemStack onItemRightClick(ItemStack var1, World var2, EntityPlayer var3) {
+ 		--var1.stackSize;
+ 		var3.heal(this.healAmount);
+ 		return var1;
++	}
++
++	public String getHeal(int i) {
++		String name = "Food Value: ";
++		String value = String.valueOf(this.healAmount);
++		String[] ret = new String[]{name, value};
++		return ret[i];
+ 	}
+ 
+ 	public int getHealAmount() {
+--- net/minecraft/src/World.java
++++ net/minecraft/src/World.java
+@@ -1648,10 +1648,10 @@
+ 		} else {
+ 			++this.lightingUpdatesCounter;
+ 
+-			boolean var2;
+ 			try {
+ 				int var1 = 500;
+ 
++				boolean var2;
+ 				while(this.lightingToUpdate.size() > 0) {
+ 					--var1;
+ 					if(var1 <= 0) {
+@@ -1663,11 +1663,10 @@
+ 				}
+ 
+ 				var2 = false;
++				return var2;
+ 			} finally {
+ 				--this.lightingUpdatesCounter;
+ 			}
+-
+-			return var2;
+ 		}
+ 	}
+ 
+@@ -1680,13 +1679,13 @@
+ 			++lightingUpdatesScheduled;
+ 
+ 			try {
+-				if(lightingUpdatesScheduled != 50) {
+-					int var9 = (var5 + var2) / 2;
+-					int var10 = (var7 + var4) / 2;
+-					if(!this.blockExists(var9, 64, var10)) {
+-						return;
+-					}
++				if(lightingUpdatesScheduled == 50) {
++					return;
++				}
+ 
++				int var9 = (var5 + var2) / 2;
++				int var10 = (var7 + var4) / 2;
++				if(this.blockExists(var9, 64, var10)) {
+ 					if(this.getChunkFromBlockCoords(var9, var10).func_21167_h()) {
+ 						return;
+ 					}
+--- /dev/null
++++ net/minecraft/src/GuiBarrel.java
+@@ -1,0 +1,89 @@
++package net.minecraft.src;
++
++import org.lwjgl.opengl.GL11;
++
++public class GuiBarrel extends GuiContainer {
++  private TileEntityBarrel barrelInventory;
++
++  private float[] brewColor = {0.0F, 0.0F, 0.0F};
++  private int fluidNotFilled = 0;
++
++  public GuiBarrel(InventoryPlayer inventory, TileEntityBarrel barrel) {
++    super(new ContainerBarrel(inventory, barrel));
++    this.barrelInventory = barrel;
++  }
++
++  protected void drawGuiContainerForegroundLayer() {
++    this.fontRenderer.drawString("Barrel", 8, 6, 4210752);
++    this.fontRenderer.drawString("Inventory", 8, this.ySize - 96 + 2, 4210752);
++  }
++
++  protected void drawGuiContainerBackgroundLayer(float f) {
++    int texture = this.mc.renderEngine.getTexture("/gui/barrel.png");
++    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
++    this.mc.renderEngine.bindTexture(texture);
++    int startX = (this.width - this.xSize) / 2;
++    int startY = (this.height - this.ySize) / 2;
++    this.drawTexturedModalRect(startX, startY, 0, 0, this.xSize, this.ySize);
++
++    this.drawFluid(startX, startY);
++    this.drawIcons(startX, startY);
++  }
++
++  private void drawFluid(int sX, int sY) {
++    if (this.barrelInventory.fluidLeft > 0) {
++      this.updateBrewColor();
++      GL11.glColor4f(this.brewColor[0],
++                     this.brewColor[1],
++                     this.brewColor[2], 1.0F);
++      this.fluidNotFilled = 5 - this.barrelInventory.fluidLeft;
++      int offsetY = this.fluidNotFilled * 9;
++      this.drawTexturedModalRect(sX + 82, sY + 19 + offsetY, this.xSize, 18 + offsetY, 13, 45);
++      GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
++    }
++  }
++
++  private void drawIcons(int sX, int sY) {
++    if (barrelInventory.getStackInSlot(0) == null)
++      this.drawTexturedModalRect(sX + 37, sY + 16, this.xSize, 0, 18, 18);
++
++    if (barrelInventory.getStackInSlot(1) == null)
++      this.drawTexturedModalRect(sX + 122, sY + 48, this.xSize + 18, 0, 18, 18);
++  }
++
++  private void updateBrewColor() {
++    switch (this.barrelInventory.ingredientFlags) {
++    case 0b11:
++      this.brewColor[0] = 0.5F;
++      this.brewColor[1] = 0.15F;
++      this.brewColor[2] = 0.25F;
++      break;
++    case 0b101:
++      this.brewColor[0] = 0.83F;
++      this.brewColor[1] = 0.73F;
++      this.brewColor[2] = 0.38F;
++      break;
++    case 0b1001:
++      this.brewColor[0] = 0.48F;
++      this.brewColor[1] = 0.35F;
++      this.brewColor[2] = 0.11F;
++      break;
++    case 0b10001:
++      this.brewColor[0] = 0.73F;
++      this.brewColor[1] = 0.76F;
++      this.brewColor[2] = 0.23F;
++      break;
++    default:
++      if (this.barrelInventory.ingredientFlags == 0b1 || this.barrelInventory.ingredientFlags == 0b0) {
++        this.brewColor[0] = 0.215F;
++        this.brewColor[1] = 0.215F;
++        this.brewColor[2] = 0.85F;
++        break;
++      }
++      this.brewColor[0] = 0.55F;
++      this.brewColor[1] = 0.48F;
++      this.brewColor[2] = 0.11F;
++      break;
++    }
++  }
++}
+--- net/minecraft/src/EntityRenderer.java
++++ net/minecraft/src/EntityRenderer.java
+@@ -135,10 +135,14 @@
+ 	}
+ 
+ 	private float getFOVModifier(float var1) {
++		if (this.mc.gameSettings.zoom) {
++			return 20.0F + this.field_22221_y + (this.field_22222_x - this.field_22221_y) * var1;
++		}
++
+ 		EntityLiving var2 = this.mc.renderViewEntity;
+-		float var3 = 70.0F;
++		float var3 = 20.0F;
+ 		if(var2.isInsideOfMaterial(Material.water)) {
+-			var3 = 60.0F;
++			var3 = 15.0F;
+ 		}
+ 
+ 		if(var2.health <= 0) {
+@@ -146,7 +150,9 @@
+ 			var3 /= (1.0F - 500.0F / (var4 + 500.0F)) * 2.0F + 1.0F;
+ 		}
+ 
+-		return var3 + this.field_22221_y + (this.field_22222_x - this.field_22221_y) * var1;
++		float out = this.mc.gameSettings.fov * 100.0F + var3;
++
++		return out + this.field_22221_y + (this.field_22222_x - this.field_22221_y) * var1;
+ 	}
+ 
+ 	private void hurtCameraEffect(float var1) {
+@@ -346,7 +352,11 @@
+ 				var6 = -1;
+ 			}
+ 
+-			if(this.mc.gameSettings.smoothCamera) {
++			if (this.mc.gameSettings.zoom) {
++				var4 = this.mouseFilterXAxis.func_22386_a(var4, 0.0005F * var3);
++				var5 = this.mouseFilterYAxis.func_22386_a(var5, 0.0005F * var3);
++			}
++			else if(this.mc.gameSettings.smoothCamera) {
+ 				var4 = this.mouseFilterXAxis.func_22386_a(var4, 0.05F * var3);
+ 				var5 = this.mouseFilterYAxis.func_22386_a(var5, 0.05F * var3);
+ 			}
+@@ -392,6 +402,11 @@
+ 				this.field_28133_I = System.nanoTime();
+ 				if(!this.mc.gameSettings.hideGUI || this.mc.currentScreen != null) {
+ 					this.mc.ingameGUI.renderGameOverlay(var1, this.mc.currentScreen != null, var16, var17);
++
++					if (this.mc.gameSettings.consoleGamma) {
++						ScaledResolution sr = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
++						this.mc.ingameGUI.drawRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), 0x3ACACACA);
++					}
+ 				}
+ 			} else {
+ 				GL11.glViewport(0, 0, this.mc.displayWidth, this.mc.displayHeight);
+@@ -854,6 +869,7 @@
+ 	private void setupFog(int var1, float var2) {
+ 		EntityLiving var3 = this.mc.renderViewEntity;
+ 		GL11.glFog(GL11.GL_FOG_COLOR, this.func_908_a(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
++
+ 		GL11.glNormal3f(0.0F, -1.0F, 0.0F);
+ 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+ 		float var4;
+@@ -884,7 +900,8 @@
+ 				var8 = (var4 * 30.0F + var5 * 70.0F) / 100.0F;
+ 				var9 = (var4 * 30.0F + var6 * 70.0F) / 100.0F;
+ 			}
+-		} else if(var3.isInsideOfMaterial(Material.lava)) {
++		}
++		else if(var3.isInsideOfMaterial(Material.lava)) {
+ 			GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_EXP);
+ 			GL11.glFogf(GL11.GL_FOG_DENSITY, 2.0F);
+ 			var4 = 0.4F;
+@@ -897,8 +914,9 @@
+ 			}
+ 		} else {
+ 			GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_LINEAR);
+-			GL11.glFogf(GL11.GL_FOG_START, this.farPlaneDistance * 0.25F);
+-			GL11.glFogf(GL11.GL_FOG_END, this.farPlaneDistance);
++			GL11.glFogf(GL11.GL_FOG_START, this.farPlaneDistance * 0.45F);
++			GL11.glFogf(GL11.GL_FOG_END, this.farPlaneDistance * 0.75F);
++			GL11.glFogf(GL11.GL_FOG_DENSITY, 0.25F);
+ 			if(var1 < 0) {
+ 				GL11.glFogf(GL11.GL_FOG_START, 0.0F);
+ 				GL11.glFogf(GL11.GL_FOG_END, this.farPlaneDistance * 0.8F);
+@@ -912,6 +930,18 @@
+ 				GL11.glFogf(GL11.GL_FOG_START, 0.0F);
+ 			}
+ 		}
++
++		if (this.mc.thePlayer.posY <= 32) {
++			this.fogColorRed = 0;
++			this.fogColorGreen = 0;
++			this.fogColorBlue = 0;
++			GL11.glFog(GL11.GL_FOG_COLOR, this.func_908_a(0, 0, 0, 1.0F));
++			GL11.glFogi(GL11.GL_FOG_MODE, GL11.GL_LINEAR);
++			GL11.glFogf(GL11.GL_FOG_DENSITY, (float)((-this.mc.thePlayer.posY + 32) * 0.0075F));
++			GL11.glFogf(GL11.GL_FOG_END, 1/(float)((-this.mc.thePlayer.posY + 32)) * 2 * 125F);
++			GL11.glFogf(GL11.GL_FOG_START, 1/(float)((-this.mc.thePlayer.posY + 32)) * 125F);
++		}
++
+ 
+ 		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+ 		GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_AMBIENT);
+--- net/minecraft/src/IRecipe.java
++++ net/minecraft/src/IRecipe.java
+@@ -2,8 +2,10 @@
+ 
+ public interface IRecipe {
+ 	boolean matches(InventoryCrafting var1);
++	boolean matchesSmith(InventorySmithing inv);
+ 
+ 	ItemStack getCraftingResult(InventoryCrafting var1);
++	ItemStack getSmithResult(InventorySmithing inv);
+ 
+ 	int getRecipeSize();
+ 
+--- net/minecraft/src/BlockRedstoneOre.java
++++ net/minecraft/src/BlockRedstoneOre.java
+@@ -49,11 +49,30 @@
+ 	}
+ 
+ 	public int idDropped(int var1, Random var2) {
+-		return Item.redstone.shiftedIndex;
++		return Item.redstoneRock.shiftedIndex;
+ 	}
+ 
++	/*
+ 	public int quantityDropped(Random var1) {
+ 		return 4 + var1.nextInt(2);
++	}
++	*/
++
++	public void dropBlockAsItemWithChance(World var1, int var2, int var3, int var4, int var5, float var6) {
++		super.dropBlockAsItemWithChance(var1, var2, var3, var4, var5, var6);
++		if (!var1.multiplayerWorld) {
++			for (int var7 = 0; var7 < 3; ++var7) {
++				if (var1.rand.nextInt(15) <= var5) {
++					float var8 = 0.85F;
++					float var9 = var1.rand.nextFloat() * var8 + (1.0F - var8) * 0.5F;
++					float var10 = var1.rand.nextFloat() * var8 + (1.0F - var8) * 0.5F;
++					float var11 = var1.rand.nextFloat() * var8 + (1.0F - var8) * 0.5F;
++					EntityItem var12 = new EntityItem(var1, (double)((float)var2 + var9), (double)((float)var3 + var10), (double)((float)var4 + var11), new ItemStack(Item.redstoneRock));
++					var12.delayBeforeCanPickup = 10;
++					var1.entityJoinedWorld(var12);
++				}
++			}
++		}
+ 	}
+ 
+ 	public void randomDisplayTick(World var1, int var2, int var3, int var4, Random var5) {
+--- /dev/null
++++ net/minecraft/src/ItemKnife.java
+@@ -1,0 +1,14 @@
++package net.minecraft.src;
++
++public class ItemKnife extends ItemMelee {
++    public ItemKnife(int id) {
++        super(id, EnumMeleeMaterial.M_KNIFE);
++        this.setItemName("knife");
++        this.setIconCoord(4, 5);
++    }
++
++    public boolean onBlockDestroyed(ItemStack item, int x, int y, int z, int a, EntityLiving ent) {
++        item.damageItem(1, ent);
++        return true;
++    }
++}
+--- net/minecraft/src/GuiIngame.java
++++ net/minecraft/src/GuiIngame.java
+@@ -20,6 +20,7 @@
+ 	private boolean field_22065_l = false;
+ 	public float damageGuiPartialTime;
+ 	float prevVignetteBrightness = 1.0F;
++	private boolean shouldDrawItem = false;
+ 
+ 	public GuiIngame(Minecraft var1) {
+ 		this.mc = var1;
+@@ -29,6 +30,12 @@
+ 		ScaledResolution var5 = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
+ 		int var6 = var5.getScaledWidth();
+ 		int var7 = var5.getScaledHeight();
++
++		int sWidth = var6;
++		int sHeight = var7;
++
++		int[] gap = {(int)(this.mc.gameSettings.guiGapHorizontal* 10), (int)(this.mc.gameSettings.guiGapVertical* 10)};
++
+ 		FontRenderer var8 = this.mc.fontRenderer;
+ 		this.mc.entityRenderer.func_905_b();
+ 		GL11.glEnable(GL11.GL_BLEND);
+@@ -50,12 +57,12 @@
+ 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/gui.png"));
+ 		InventoryPlayer var11 = this.mc.thePlayer.inventory;
+ 		this.zLevel = -90.0F;
+-		this.drawTexturedModalRect(var6 / 2 - 91, var7 - 22, 0, 0, 182, 22);
+-		this.drawTexturedModalRect(var6 / 2 - 91 - 1 + var11.currentItem * 20, var7 - 22 - 1, 0, 22, 24, 22);
++		this.drawTexturedModalRect(var6 / 2 - 91, (var7 - gap[1]) - 22, 0, 0, 182, 22);
++		this.drawTexturedModalRect(var6 / 2 - 91 - 1 + var11.currentItem * 20, (var7 - gap[1]) - 22 - 1, 0, 22, 24, 22);
+ 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/icons.png"));
+ 		GL11.glEnable(GL11.GL_BLEND);
+ 		GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR);
+-		this.drawTexturedModalRect(var6 / 2 - 7, var7 / 2 - 7, 0, 0, 16, 16);
++		this.drawTexturedModalRect(var6 / 2 - 7, (var7 - gap[1]) / 2 - 7, 0, 0, 16, 16);
+ 		GL11.glDisable(GL11.GL_BLEND);
+ 		boolean var12 = this.mc.thePlayer.heartsLife / 3 % 2 == 1;
+ 		if(this.mc.thePlayer.heartsLife < 10) {
+@@ -71,6 +78,7 @@
+ 		if(this.mc.playerController.shouldDrawHUD()) {
+ 			var15 = this.mc.thePlayer.getPlayerArmorValue();
+ 
++			/*
+ 			int var18;
+ 			for(var16 = 0; var16 < 10; ++var16) {
+ 				var17 = var7 - 32;
+@@ -118,7 +126,73 @@
+ 					this.drawTexturedModalRect(var19, var17, 61, 0, 9, 9);
+ 				}
+ 			}
+-
++			*/
++
++			// Rendering updated stats
++			/* Bars variant */
++			boolean shouldRenderArmor = this.mc.thePlayer.getPlayerArmorValue() > 0 ? true : false;
++			boolean shouldRenderAir = this.mc.thePlayer.isInsideOfMaterial(Material.water);
++
++			int yOffset = sHeight - 32 - gap[1];
++			int xOffsetHealth = sWidth / 2 - 91;
++			int xOffsetArmor = sWidth / 2 + 17;
++
++			// Health
++			this.drawTexturedModalRect(xOffsetHealth, yOffset, 0, 32, 74, 7);
++			int renderingHealth = (int)(this.mc.thePlayer.health * 3.6F);
++			if (renderingHealth > 72) renderingHealth = 72;
++			if (!var12)
++				GL11.glColor4f(0.50F, 0.0F, 0.0F, 1.0F);
++			else
++				GL11.glColor4f(0.88F, 0.22F, 0.22F, 1.0F);
++			this.drawTexturedModalRect(xOffsetHealth, yOffset, 0, 39, 1 + renderingHealth, 7);
++			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
++
++			// Armor
++			if (shouldRenderArmor) {
++				this.drawTexturedModalRect(xOffsetArmor, yOffset, 0, 32, 74, 7);
++				int renderingArmor = (int)(this.mc.thePlayer.getPlayerArmorValue() * 3.6F);
++				if (renderingArmor > 72) renderingArmor = 72;
++				GL11.glColor4f(0.47F, 0.47F, 0.47F, 1.0f);
++				this.drawTexturedModalRect(xOffsetArmor, yOffset, 0, 39, 1 + renderingArmor, 7);
++				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
++			}
++
++			// Air
++			if (shouldRenderAir) {
++				int yOffsetAir = shouldRenderArmor ? yOffset - 9 : yOffset;
++				this.drawTexturedModalRect(xOffsetArmor, yOffsetAir, 0, 32, 74, 7);
++				int targetAir = (int)(this.mc.thePlayer.air * 10 / 50);
++				if (targetAir < 0) targetAir = 0;
++				int renderingAir = (int)(targetAir * 1.2);
++				if (renderingAir > 72) renderingAir = 72;
++				GL11.glColor4f(0.0f, 0.42F, 0.50F, 1.0f);
++				this.drawTexturedModalRect(xOffsetArmor, yOffsetAir, 0, 39, 1 + renderingAir, 7);
++				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
++			}
++
++			// Text stats
++			// health
++			int xOffsetText = this.mc.thePlayer.health > 9 ? xOffsetHealth + 31 : xOffsetHealth + 35;
++			var8.drawStringWithShadow(String.valueOf(this.mc.thePlayer.health),
++									  xOffsetText, yOffset, 0xFFFFFF);
++			// armor
++			if (shouldRenderArmor) {
++				xOffsetText = this.mc.thePlayer.getPlayerArmorValue() > 9 ? xOffsetArmor + 31 : xOffsetArmor + 35;
++				var8.drawStringWithShadow(String.valueOf(this.mc.thePlayer.getPlayerArmorValue()),
++										  xOffsetText, yOffset, 0xFFFFFF);
++			}
++			// air
++			if (shouldRenderAir) {
++				int targetAir = (int)(this.mc.thePlayer.air * 10 / 150);
++				if (targetAir < 0) targetAir = 0;
++				xOffsetText = targetAir > 9 ? xOffsetArmor + 31 : xOffsetArmor + 35;
++				int yOffsetAir = shouldRenderArmor ? yOffset - 9 : yOffset;
++				var8.drawStringWithShadow(String.valueOf(targetAir),
++										  xOffsetText, yOffsetAir, 0xFFFFFF);
++			}
++
++			/*
+ 			if(this.mc.thePlayer.isInsideOfMaterial(Material.water)) {
+ 				var16 = (int)Math.ceil((double)(this.mc.thePlayer.air - 2) * 10.0D / 300.0D);
+ 				var17 = (int)Math.ceil((double)this.mc.thePlayer.air * 10.0D / 300.0D) - var16;
+@@ -131,7 +205,51 @@
+ 					}
+ 				}
+ 			}
++			*/
++
++			// Compass stats
++			if (this.mc.thePlayer.hasItemInInventory(Item.compass.shiftedIndex)) {
++				int offset = this.mc.gameSettings.showDebugInfo ? 12: 2;
++
++				// drawing coords
++				//var8.drawStringWithShadow("x: " + String.valueOf(MathHelper.floor_double(this.mc.thePlayer.posX)), 2, offset, 0xFFFFFF);
++				//var8.drawStringWithShadow("y: " + String.valueOf(MathHelper.floor_double(this.mc.thePlayer.posY)), 2, offset + 8, 0xFFFFFF);
++				//var8.drawStringWithShadow("z: " + String.valueOf(MathHelper.floor_double(this.mc.thePlayer.posZ)), 2, offset + 16, 0xFFFFFF);
++
++				var8.drawStringWithShadow("x: " + String.valueOf(MathHelper.floor_double(this.mc.thePlayer.posX)) +
++																	"  y: " + String.valueOf(MathHelper.floor_double(this.mc.thePlayer.posY)) +
++																	"  z: " + String.valueOf(MathHelper.floor_double(this.mc.thePlayer.posZ)),
++																	2 + gap[0], offset + gap[1], 0xFFFFFF);
++
++				// facing
++				int facing = (MathHelper.floor_double((double)(this.mc.thePlayer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3);
++				String facingStr = "";
++				switch (facing) {
++				case 0:
++					facingStr = "north";
++					break;
++				case 1:
++					facingStr = "east";
++					break;
++				case 2:
++					facingStr = "south";
++					break;
++				case 3:
++					facingStr = "west";
++					break;
++				default:
++					facingStr = "?";
++					break;
++				}
++				var8.drawStringWithShadow(facingStr, 2 + gap[0], offset + 9 + gap[1] /*24 if old variant*/, 0xFFFFFF);
++			}
+ 		}
++
++		Purity pur = new Purity();
++		if (pur.isDebug())
++			var8.drawStringWithShadow("DEBUG BUILD",
++									  (sWidth / 2) - (var8.getStringWidth("DEBUG BUILD") / 2),
++									  2 + gap[1], 0xFFFFFF);
+ 
+ 		GL11.glDisable(GL11.GL_BLEND);
+ 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+@@ -142,10 +260,15 @@
+ 
+ 		for(var15 = 0; var15 < 9; ++var15) {
+ 			var16 = var6 / 2 - 90 + var15 * 20 + 2;
+-			var17 = var7 - 16 - 3;
++			var17 = (var7 - gap[1]) - 16 - 3;
+ 			this.renderInventorySlot(var15, var16, var17, var1);
+ 		}
+ 
++		/* Render picked up item */
++		if (this.itemToRender != null) {
++			this.renderPickedUp();
++		}
++
+ 		RenderHelper.disableStandardItemLighting();
+ 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+ 		if(this.mc.thePlayer.func_22060_M() > 0) {
+@@ -158,7 +281,7 @@
+ 			}
+ 
+ 			var17 = (int)(220.0F * var27) << 24 | 1052704;
+-			this.drawRect(0, 0, var6, var7, var17);
++			this.drawRect(0, 0, var6, (var7 - gap[1]), var17);
+ 			GL11.glEnable(GL11.GL_ALPHA_TEST);
+ 			GL11.glEnable(GL11.GL_DEPTH_TEST);
+ 		}
+@@ -170,23 +293,17 @@
+ 				GL11.glTranslatef(0.0F, 32.0F, 0.0F);
+ 			}
+ 
+-			var8.drawStringWithShadow("Minecraft Beta 1.7.3 (" + this.mc.debug + ")", 2, 2, 16777215);
+-			var8.drawStringWithShadow(this.mc.func_6241_m(), 2, 12, 16777215);
+-			var8.drawStringWithShadow(this.mc.func_6262_n(), 2, 22, 16777215);
+-			var8.drawStringWithShadow(this.mc.func_6245_o(), 2, 32, 16777215);
+-			var8.drawStringWithShadow(this.mc.func_21002_o(), 2, 42, 16777215);
++			Purity instance = new Purity();
++			var8.drawStringWithShadow("Minecraft Purity " + instance.getVersion() + " (" + this.mc.debug + ")", 2 + gap[0], 2 + gap[1], 0xFFFFFF);
++
+ 			long var24 = Runtime.getRuntime().maxMemory();
+ 			long var29 = Runtime.getRuntime().totalMemory();
+ 			long var30 = Runtime.getRuntime().freeMemory();
+ 			long var21 = var29 - var30;
+ 			var23 = "Used memory: " + var21 * 100L / var24 + "% (" + var21 / 1024L / 1024L + "MB) of " + var24 / 1024L / 1024L + "MB";
+-			this.drawString(var8, var23, var6 - var8.getStringWidth(var23) - 2, 2, 14737632);
++			this.drawString(var8, var23, var6 - var8.getStringWidth(var23) - 2 - gap[0], 2 + gap[1], 14737632);
+ 			var23 = "Allocated memory: " + var29 * 100L / var24 + "% (" + var29 / 1024L / 1024L + "MB)";
+-			this.drawString(var8, var23, var6 - var8.getStringWidth(var23) - 2, 12, 14737632);
+-			this.drawString(var8, "x: " + this.mc.thePlayer.posX, 2, 64, 14737632);
+-			this.drawString(var8, "y: " + this.mc.thePlayer.posY, 2, 72, 14737632);
+-			this.drawString(var8, "z: " + this.mc.thePlayer.posZ, 2, 80, 14737632);
+-			this.drawString(var8, "f: " + (MathHelper.floor_double((double)(this.mc.thePlayer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3), 2, 88, 14737632);
++			this.drawString(var8, var23, var6 - var8.getStringWidth(var23) - 2 - gap[0], 12 + gap[1], 14737632);
+ 			GL11.glPopMatrix();
+ 		}
+ 
+@@ -199,7 +316,7 @@
+ 
+ 			if(var16 > 0) {
+ 				GL11.glPushMatrix();
+-				GL11.glTranslatef((float)(var6 / 2), (float)(var7 - 48), 0.0F);
++				GL11.glTranslatef((float)(var6 / 2), (float)(var7 - gap[1] - 48), 0.0F);
+ 				GL11.glEnable(GL11.GL_BLEND);
+ 				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+ 				var17 = 16777215;
+@@ -224,7 +341,7 @@
+ 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+ 		GL11.glDisable(GL11.GL_ALPHA_TEST);
+ 		GL11.glPushMatrix();
+-		GL11.glTranslatef(0.0F, (float)(var7 - 48), 0.0F);
++		GL11.glTranslatef(0.0F, (float)(var7 - gap[1] - 48), 0.0F);
+ 
+ 		for(var17 = 0; var17 < this.chatMessageList.size() && var17 < var26; ++var17) {
+ 			if(((ChatLine)this.chatMessageList.get(var17)).updateCounter < 200 || var31) {
+@@ -356,7 +473,6 @@
+ 			if(var6 > 0.0F) {
+ 				GL11.glPopMatrix();
+ 			}
+-
+ 			itemRenderer.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, var5, var2, var3);
+ 		}
+ 	}
+@@ -406,5 +522,51 @@
+ 		StringTranslate var2 = StringTranslate.getInstance();
+ 		String var3 = var2.translateKey(var1);
+ 		this.addChatMessage(var3);
++	}
++
++	private EntityItem itemToRender;
++	private int itemAmount = 0;
++	private int renderingTime;
++
++	public void setItemToRender(Entity item, int amount) {
++		if (item instanceof EntityItem) {
++			this.renderingTime = 0;
++
++			if (this.itemToRender != null && this.itemToRender.item.itemID == ((EntityItem)item).item.itemID && this.itemAmount != 0) {
++				this.itemAmount += amount;
++			}
++			else
++				this.itemAmount = amount;
++
++			this.itemToRender = (EntityItem)item;
++		}
++	}
++
++	public void renderPickedUp() {
++		ScaledResolution sr = new ScaledResolution(this.mc.gameSettings,
++																							 this.mc.displayWidth,
++																							 this.mc.displayHeight);
++		int[] gap = {(int)(this.mc.gameSettings.guiGapHorizontal * 10), (int)(this.mc.gameSettings.guiGapVertical * 10)};
++
++		int sHeight = sr.getScaledHeight();
++
++		if (this.renderingTime < 2500) {
++			String fullString = "+ " + String.valueOf(this.itemAmount) + " " +
++				StringTranslate.getInstance().translateNamedKey(this.itemToRender.item.getItemName());
++
++			this.drawGradientRect(2 + gap[0], sHeight - 19 - gap[1],
++														this.mc.fontRenderer.getStringWidth(fullString) + 22 + gap[0],
++														sHeight - 1 - gap[1], -1073741824, -1073741824);
++			this.itemRenderer.renderItemIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, this.itemToRender.item,
++																					2 + gap[0], sHeight - 18 - gap[1]);
++			this.mc.fontRenderer.drawStringWithShadow(fullString,
++																								21 + gap[0], sHeight - 13 - gap[1], 0xFFFFFF);
++			this.renderingTime++;
++		}
++		else {
++			this.renderingTime = 0;
++			this.itemToRender = null;
++			this.itemAmount = 0;
++		}
+ 	}
+ }
+--- net/minecraft/src/ShapedRecipes.java
++++ net/minecraft/src/ShapedRecipes.java
+@@ -76,4 +76,7 @@
+ 	public int getRecipeSize() {
+ 		return this.recipeWidth * this.recipeHeight;
+ 	}
++
++	public boolean matchesSmith(InventorySmithing inv) { return false; }
++	public ItemStack getSmithResult(InventorySmithing inv) { return null; }
+ }
+--- net/minecraft/src/CraftingManager.java
++++ net/minecraft/src/CraftingManager.java
+@@ -8,19 +8,21 @@
+ public class CraftingManager {
+ 	private static final CraftingManager instance = new CraftingManager();
+ 	private List recipes = new ArrayList();
++	private List smithing = new ArrayList();
+ 
+ 	public static final CraftingManager getInstance() {
+ 		return instance;
+ 	}
+ 
+ 	private CraftingManager() {
+-		(new RecipesTools()).addRecipes(this);
+-		(new RecipesWeapons()).addRecipes(this);
++		//(new RecipesTools()).addRecipes(this);
++		//(new RecipesWeapons()).addRecipes(this);
+ 		(new RecipesIngots()).addRecipes(this);
+ 		(new RecipesFood()).addRecipes(this);
+ 		(new RecipesCrafting()).addRecipes(this);
+-		(new RecipesArmor()).addRecipes(this);
++		//(new RecipesArmor()).addRecipes(this);
+ 		(new RecipesDyes()).addRecipes(this);
++		(new RecipesPurity()).addRecipes(this);
+ 		this.addRecipe(new ItemStack(Item.paper, 3), new Object[]{"###", Character.valueOf('#'), Item.reed});
+ 		this.addRecipe(new ItemStack(Item.book, 1), new Object[]{"#", "#", "#", Character.valueOf('#'), Item.paper});
+ 		this.addRecipe(new ItemStack(Block.fence, 2), new Object[]{"###", "###", Character.valueOf('#'), Item.stick});
+@@ -34,7 +36,6 @@
+ 		this.addRecipe(new ItemStack(Block.cloth, 1), new Object[]{"##", "##", Character.valueOf('#'), Item.silk});
+ 		this.addRecipe(new ItemStack(Block.tnt, 1), new Object[]{"X#X", "#X#", "X#X", Character.valueOf('X'), Item.gunpowder, Character.valueOf('#'), Block.sand});
+ 		this.addRecipe(new ItemStack(Block.stairSingle, 3, 3), new Object[]{"###", Character.valueOf('#'), Block.cobblestone});
+-		this.addRecipe(new ItemStack(Block.stairSingle, 3, 0), new Object[]{"###", Character.valueOf('#'), Block.stone});
+ 		this.addRecipe(new ItemStack(Block.stairSingle, 3, 1), new Object[]{"###", Character.valueOf('#'), Block.sandStone});
+ 		this.addRecipe(new ItemStack(Block.stairSingle, 3, 2), new Object[]{"###", Character.valueOf('#'), Block.planks});
+ 		this.addRecipe(new ItemStack(Block.ladder, 2), new Object[]{"# #", "###", "# #", Character.valueOf('#'), Item.stick});
+@@ -77,7 +78,7 @@
+ 		this.addRecipe(new ItemStack(Block.dispenser, 1), new Object[]{"###", "#X#", "#R#", Character.valueOf('#'), Block.cobblestone, Character.valueOf('X'), Item.bow, Character.valueOf('R'), Item.redstone});
+ 		this.addRecipe(new ItemStack(Block.pistonBase, 1), new Object[]{"TTT", "#X#", "#R#", Character.valueOf('#'), Block.cobblestone, Character.valueOf('X'), Item.ingotIron, Character.valueOf('R'), Item.redstone, Character.valueOf('T'), Block.planks});
+ 		this.addRecipe(new ItemStack(Block.pistonStickyBase, 1), new Object[]{"S", "P", Character.valueOf('S'), Item.slimeBall, Character.valueOf('P'), Block.pistonBase});
+-		this.addRecipe(new ItemStack(Item.bed, 1), new Object[]{"###", "XXX", Character.valueOf('#'), Block.cloth, Character.valueOf('X'), Block.planks});
++		//this.addRecipe(new ItemStack(Item.bed, 1), new Object[]{"###", "XXX", Character.valueOf('#'), Block.cloth, Character.valueOf('X'), Block.planks});
+ 		Collections.sort(this.recipes, new RecipeSorter(this));
+ 		System.out.println(this.recipes.size() + " recipes");
+ 	}
+@@ -157,6 +158,13 @@
+ 		this.recipes.add(new ShapelessRecipes(var1, var3));
+ 	}
+ 
++	void addSmithingRecipe(ItemStack result, ItemStack armor, ItemStack upgrade) {
++		if (armor.getItem() instanceof ItemUpgradableArmor &&
++			upgrade.getItem() instanceof ItemUpgradeSlot) {
++			this.smithing.add(new SmithingRecipes(result, upgrade, armor));
++		}
++	}
++
+ 	public ItemStack findMatchingRecipe(InventoryCrafting var1) {
+ 		for(int var2 = 0; var2 < this.recipes.size(); ++var2) {
+ 			IRecipe var3 = (IRecipe)this.recipes.get(var2);
+@@ -168,7 +176,18 @@
+ 		return null;
+ 	}
+ 
++	public ItemStack findMatchingRecipeSmithing(InventorySmithing inv) {
++		for(int i = 0; i < this.smithing.size(); ++i) {
++			IRecipe rec = (IRecipe)this.smithing.get(i);
++			if (rec.matchesSmith(inv)) { return rec.getSmithResult(inv); }
++		}
++
++		return null;
++	}
++
+ 	public List getRecipeList() {
+ 		return this.recipes;
+ 	}
++
++	public List getSmithingList() { return this.smithing; }
+ }
+--- net/minecraft/src/TileEntity.java
++++ net/minecraft/src/TileEntity.java
+@@ -106,5 +106,6 @@
+ 		addMapping(TileEntityMobSpawner.class, "MobSpawner");
+ 		addMapping(TileEntityNote.class, "Music");
+ 		addMapping(TileEntityPiston.class, "Piston");
++		addMapping(TileEntityBarrel.class, "Barrel");
+ 	}
+ }
+--- net/minecraft/src/ItemFertilizer.java
++++ net/minecraft/src/ItemFertilizer.java
+@@ -25,6 +25,23 @@
+             return true;
+         }
+ 
++        if (id == Block.grapeLeaves.blockID) {
++            if (!w.multiplayerWorld) {
++                ((BlockGrapes)Block.grapeLeaves).fertilize(w, x, y, z);
++                --item.stackSize;
++            }
++            return true;
++        }
++
++        if (id == Block.grapeBushSapling.blockID) {
++            if (!w.multiplayerWorld) {
++                ((BlockGrapeSapling)Block.grapeBushSapling).generateBush(w, x, y, z);
++                --item.stackSize;
++            }
++
++            return true;
++        }
++
+         return false;
+     }
+ }
+--- net/minecraft/src/ItemUpgradableArmor.java
++++ net/minecraft/src/ItemUpgradableArmor.java
+@@ -1,8 +1,8 @@
+ package net.minecraft.src;
+ 
+ public class ItemUpgradableArmor extends ItemArmor {
+-    private static final int[] damageReduceAmountArray = new int[]{3, 8, 6, 3};
+-    private static final int[] maxDamageArray = new int[]{11, 16, 15, 13};
++    private static final int[] damageReduceAmountArray = {3, 8, 6, 3};
++    private static final int[] maxDamageArray = {11, 16, 15, 13};
+     private static final String[] armorUpgTypes = new String[]{"null", "diamond", "emerald", "ruby"};
+ 
+     private static final String[] armorName = new String[]{"ironHelmet", "ironChest", "ironLegs", "ironBoots"};
+--- net/minecraft/client/Minecraft.java
++++ net/minecraft/client/Minecraft.java
+@@ -1,5 +1,7 @@
+ package net.minecraft.client;
+ 
++import net.minecraft.src.Purity;
++
+ import java.awt.BorderLayout;
+ import java.awt.Canvas;
+ import java.awt.Color;
+@@ -218,7 +220,8 @@
+ 			Display.setDisplayMode(new DisplayMode(this.displayWidth, this.displayHeight));
+ 		}
+ 
+-		Display.setTitle("Minecraft Minecraft Beta 1.7.3");
++		Purity pur = new Purity();
++		Display.setTitle(pur.getTitle());
+ 
+ 		try {
+ 			Display.create();
+@@ -566,7 +569,7 @@
+ 					}
+ 
+ 					if(this.gameSettings.showDebugInfo) {
+-						this.displayDebugInfo(var24);
++						//this.displayDebugInfo(var24);
+ 					} else {
+ 						this.prevFrameTime = System.nanoTime();
+ 					}
+@@ -596,7 +599,7 @@
+ 					++var3;
+ 
+ 					for(this.isGamePaused = !this.isMultiplayerWorld() && this.currentScreen != null && this.currentScreen.doesGuiPauseGame(); System.currentTimeMillis() >= var1 + 1000L; var3 = 0) {
+-						this.debug = var3 + " fps, " + WorldRenderer.chunksUpdated + " chunk updates";
++						this.debug = var3 + " fps";
+ 						WorldRenderer.chunksUpdated = 0;
+ 						var1 += 1000L;
+ 					}
+--- net/minecraft/src/InventoryPlayer.java
++++ net/minecraft/src/InventoryPlayer.java
+@@ -9,7 +9,31 @@
+ 	public boolean inventoryChanged = false;
+ 
+ 	public InventoryPlayer(EntityPlayer var1) {
++		Purity purInst = new Purity();
+ 		this.player = var1;
++
++		if (purInst.isDebug()) {
++			mainInventory[0] = new ItemStack(Block.workbench, 1);
++			mainInventory[1] = new ItemStack(Block.cobblestone, 64);
++			mainInventory[2] = new ItemStack(Block.wood, 64);
++			mainInventory[4] = new ItemStack(Item.pickaxeSteel, 1);
++			mainInventory[5] = new ItemStack(Item.compass, 1);
++			mainInventory[6] = new ItemStack(Item.ironHelmetR, 1);
++			mainInventory[7] = new ItemStack(Item.ironChestR, 1);
++			mainInventory[8] = new ItemStack(Item.ironLegsR, 1);
++			mainInventory[9] = new ItemStack(Item.ironBootsR, 1);
++			mainInventory[11] = new ItemStack(Block.barrel, 64);
++			mainInventory[12] = new ItemStack(Item.bottle, 64);
++			mainInventory[14] = new ItemStack(Item.wine, 16);
++			mainInventory[15] = new ItemStack(Item.beer, 16);
++			mainInventory[16] = new ItemStack(Item.kvass, 16);
++			mainInventory[17] = new ItemStack(Item.bucketWater, 1);
++			mainInventory[18] = new ItemStack(Item.sugar, 64);
++			mainInventory[19] = new ItemStack(Item.bread, 16);
++			mainInventory[20] = new ItemStack(Item.grape, 16);
++			mainInventory[21] = new ItemStack(Item.wheat, 64);
++			mainInventory[22] = new ItemStack(Item.appleRed, 16);
++		}
+ 	}
+ 
+ 	public ItemStack getCurrentItem() {
+--- net/minecraft/src/AchievementMap.java
++++ net/minecraft/src/AchievementMap.java
+@@ -10,6 +10,7 @@
+ 	private Map guidMap = new HashMap();
+ 
+ 	private AchievementMap() {
++		/*
+ 		try {
+ 			BufferedReader var1 = new BufferedReader(new InputStreamReader(AchievementMap.class.getResourceAsStream("/achievement/map.txt")));
+ 
+@@ -27,6 +28,7 @@
+ 		} catch (Exception var5) {
+ 			var5.printStackTrace();
+ 		}
++		*/
+ 
+ 	}
+ 
+--- net/minecraft/src/EntityPlayer.java
++++ net/minecraft/src/EntityPlayer.java
+@@ -51,6 +51,16 @@
+ 		this.texture = "/mob/char.png";
+ 	}
+ 
++	public boolean hasItemInInventory(int id) {
++		for (int i = 0; i < inventory.mainInventory.length; i++) {
++			if (inventory.mainInventory[i] != null &&
++				inventory.mainInventory[i].itemID == id)
++				return true;
++		}
++
++		return false;
++	}
++
+ 	protected void entityInit() {
+ 		super.entityInit();
+ 		this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
+@@ -205,6 +215,8 @@
+ 			}
+ 		}
+ 
++		if (this.health > 20 && this.ticksExisted % 20 * 12 == 0) this.health--;
++
+ 	}
+ 
+ 	private void collideWithPlayer(Entity var1) {
+@@ -337,11 +349,18 @@
+ 
+ 	}
+ 
++	public void displayGUIBarrel(TileEntityBarrel inv) {
++	}
++
+ 	public void displayGUIChest(IInventory var1) {
+ 	}
+ 
+ 	public void displayWorkbenchGUI(int var1, int var2, int var3) {
+ 	}
++
++	public void displaySmithingGUI(int var1, int var2, int var3) {}
++
++	public void displayGrindstoneGUI(int i, int j, int k) {}
+ 
+ 	public void onItemPickup(Entity var1, int var2) {
+ 	}
+--- /dev/null
++++ net/minecraft/src/GuiGuiSettings.java
+@@ -1,0 +1,61 @@
++package net.minecraft.src;
++
++public class GuiGuiSettings extends GuiScreen {
++  private GuiScreen parent;
++  protected String title = "GUI Settings";
++  private GameSettings gameSettings;
++  private static EnumOptions[] options = new EnumOptions[]{EnumOptions.GUI_GAP_HORIZONTAL, EnumOptions.GUI_GAP_VERTICAL, EnumOptions.GUI_SCALE};
++
++  public GuiGuiSettings(GuiScreen p, GameSettings gs) {
++    this.parent = p;
++    this.gameSettings = gs;
++  }
++
++  public void initGui() {
++    StringTranslate inst = StringTranslate.getInstance();
++    this.title = inst.translateKey("options.guiSettingsTitle");
++    int index = 0;
++    EnumOptions[] opts = options;
++    int len = opts.length;
++
++    for (int i = 0; i < len; i++) {
++      EnumOptions option = opts[i];
++      if (!option.getEnumFloat()) {
++        this.controlList.add(new GuiSmallButton(option.returnEnumOrdinal(), this.width / 2 - 155 + index % 2 * 160, this.height / 6 + 24 * (index >> 1), option, this.gameSettings.getKeyBinding(option)));
++      } else {
++        this.controlList.add(new GuiSlider(option.returnEnumOrdinal(), this.width / 2 - 155 + index % 2 * 160, this.height / 6 + 24 * (index >> 1), option, this.gameSettings.getKeyBinding(option), this.gameSettings.getOptionFloatValue(option)));
++      }
++
++      index++;
++    }
++
++    this.controlList.add(new GuiButton(200, this.width / 2 - 100, this.height / 6 + 168, inst.translateKey("gui.done")));
++  }
++
++  protected void actionPerformed(GuiButton b) {
++    if (b.enabled) {
++      if (b.id < 100 && b instanceof GuiSmallButton) {
++        this.gameSettings.setOptionValue(((GuiSmallButton)b).returnEnumOptions(), 1);
++        b.displayString = this.gameSettings.getKeyBinding(EnumOptions.getEnumOptions(b.id));
++      }
++
++      if (b.id == 200) {
++        this.mc.gameSettings.saveOptions();
++        this.mc.displayGuiScreen(this.parent);
++      }
++
++      if (b instanceof GuiSlider) return;
++
++      ScaledResolution sr = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
++      int width = sr.getScaledWidth();
++      int height = sr.getScaledHeight();
++      this.setWorldAndResolution(this.mc, width, height);
++    }
++  }
++
++  public void drawScreen(int var1, int var2, float var3) {
++    this.drawDefaultBackground();
++    this.drawCenteredString(this.fontRenderer, this.title, this.width / 2, 20, 0xFFFFFF);
++    super.drawScreen(var1, var2, var3);
++  }
++}
+--- net/minecraft/src/RenderGlobal.java
++++ net/minecraft/src/RenderGlobal.java
+@@ -186,6 +186,8 @@
+ 
+ 	public void loadRenderers() {
+ 		Block.leaves.setGraphicsLevel(this.mc.gameSettings.fancyGraphics);
++		Block.grapeLeaves.setGraphicsLevel(this.mc.gameSettings.fancyGraphics);
++
+ 		this.renderDistance = this.mc.gameSettings.renderDistance;
+ 		int var1;
+ 		if(this.worldRenderers != null) {
+--- net/minecraft/src/BlockWorkbench.java
++++ net/minecraft/src/BlockWorkbench.java
+@@ -11,11 +11,9 @@
+ 	}
+ 
+ 	public boolean blockActivated(World var1, int var2, int var3, int var4, EntityPlayer var5) {
+-		if(var1.multiplayerWorld) {
+-			return true;
+-		} else {
++		if (!var1.multiplayerWorld)
+ 			var5.displayWorkbenchGUI(var2, var3, var4);
+-			return true;
+-		}
++
++		return true;
+ 	}
+ }
+--- net/minecraft/src/FurnaceRecipes.java
++++ net/minecraft/src/FurnaceRecipes.java
+@@ -22,6 +22,9 @@
+ 		this.addSmelting(Item.clay.shiftedIndex, new ItemStack(Item.brick));
+ 		this.addSmelting(Block.cactus.blockID, new ItemStack(Item.dyePowder, 1, 2));
+ 		this.addSmelting(Block.wood.blockID, new ItemStack(Item.coal, 1, 1));
++		this.addSmelting(Item.diamondDust.shiftedIndex, new ItemStack(Item.diamondShard));
++		this.addSmelting(Item.ironDust.shiftedIndex, new ItemStack(Item.ingotIron));
++		this.addSmelting(Block.stone.blockID, new ItemStack(Block.smoothStone));
+ 	}
+ 
+ 	public void addSmelting(int var1, ItemStack var2) {
+--- net/minecraft/src/RecipesTools.java
++++ net/minecraft/src/RecipesTools.java
+@@ -1,10 +1,11 @@
+ package net.minecraft.src;
+ 
+ public class RecipesTools {
+-	private String[][] recipePatterns = new String[][]{{"XXX", " # ", " # "}, {"X", "#", "#"}, {"XX", "X#", " #"}, {"XX", " #", " #"}};
+-	private Object[][] recipeItems = new Object[][]{{Block.planks, Block.cobblestone, Item.ingotIron, Item.diamond, Item.ingotGold}, {Item.pickaxeWood, Item.pickaxeStone, Item.pickaxeSteel, Item.pickaxeDiamond, Item.pickaxeGold}, {Item.shovelWood, Item.shovelStone, Item.shovelSteel, Item.shovelDiamond, Item.shovelGold}, {Item.axeWood, Item.axeStone, Item.axeSteel, Item.axeDiamond, Item.axeGold}, {Item.hoeWood, Item.hoeStone, Item.hoeSteel, Item.hoeDiamond, Item.hoeGold}};
++	//private String[][] recipePatterns = new String[][]{{"XXX", " # ", " # "}, {"X", "#", "#"}, {"XX", "X#", " #"}, {"XX", " #", " #"}};
++	//private Object[][] recipeItems = new Object[][]{{Block.planks, Block.cobblestone, Item.ingotIron, Item.diamond, Item.ingotGold}, {Item.pickaxeWood, Item.pickaxeStone, Item.pickaxeSteel, Item.pickaxeDiamond, Item.pickaxeGold}, {Item.shovelWood, Item.shovelStone, Item.shovelSteel, Item.shovelDiamond, Item.shovelGold}, {Item.axeWood, Item.axeStone, Item.axeSteel, Item.axeDiamond, Item.axeGold}, {Item.hoeWood, Item.hoeStone, Item.hoeSteel, Item.hoeDiamond, Item.hoeGold}};
+ 
+ 	public void addRecipes(CraftingManager var1) {
++		/*
+ 		for(int var2 = 0; var2 < this.recipeItems[0].length; ++var2) {
+ 			Object var3 = this.recipeItems[0][var2];
+ 
+@@ -13,7 +14,7 @@
+ 				var1.addRecipe(new ItemStack(var5), new Object[]{this.recipePatterns[var4], Character.valueOf('#'), Item.stick, Character.valueOf('X'), var3});
+ 			}
+ 		}
+-
+-		var1.addRecipe(new ItemStack(Item.shears), new Object[]{" #", "# ", Character.valueOf('#'), Item.ingotIron});
++		*/
++		//var1.addRecipe(new ItemStack(Item.shears), new Object[]{" #", "# ", Character.valueOf('#'), Item.ingotIron});
+ 	}
+ }
+--- net/minecraft/src/InventoryBasic.java
++++ net/minecraft/src/InventoryBasic.java
+@@ -73,4 +73,9 @@
+ 	public boolean canInteractWith(EntityPlayer var1) {
+ 		return true;
+ 	}
++
++	public void makeSlotEmpty(int id) {
++		if (id < this.getSizeInventory())
++			this.inventoryContents[id] = null;
++	}
+ }
+--- net/minecraft/src/EnumOptions.java
++++ net/minecraft/src/EnumOptions.java
+@@ -13,7 +13,11 @@
+ 	DIFFICULTY("options.difficulty", false, false),
+ 	GRAPHICS("options.graphics", false, false),
+ 	AMBIENT_OCCLUSION("options.ao", false, true),
+-	GUI_SCALE("options.guiScale", false, false);
++	GUI_SCALE("options.guiScale", false, false),
++	CONSOLE_GAMMA("options.consoleGamma", false, true),
++	FOV("options.fov", true, false),
++	GUI_GAP_HORIZONTAL("options.guigaphorizontal", true, false),
++	GUI_GAP_VERTICAL("options.guigapvertical", true, false);
+ 
+ 	private final boolean enumFloat;
+ 	private final boolean enumBoolean;
+--- net/minecraft/src/ItemArmor.java
++++ net/minecraft/src/ItemArmor.java
+@@ -5,7 +5,7 @@
+ 	private static final int[] maxDamageArray = new int[]{11, 16, 15, 13};
+ 	public final int armorLevel;
+ 	public final int armorType;
+-	public final int damageReduceAmount;
++	public int damageReduceAmount;
+ 	public final int renderIndex;
+ 
+ 	public ItemArmor(int var1, int var2, int var3, int var4) {
+--- net/minecraft/src/ItemPickaxe.java
++++ net/minecraft/src/ItemPickaxe.java
+@@ -1,7 +1,7 @@
+ package net.minecraft.src;
+ 
+ public class ItemPickaxe extends ItemTool {
+-	private static Block[] blocksEffectiveAgainst = new Block[]{Block.cobblestone, Block.stairDouble, Block.stairSingle, Block.stone, Block.sandStone, Block.cobblestoneMossy, Block.oreIron, Block.blockSteel, Block.oreCoal, Block.blockGold, Block.oreGold, Block.oreDiamond, Block.blockDiamond, Block.ice, Block.netherrack, Block.oreLapis, Block.blockLapis};
++	private static Block[] blocksEffectiveAgainst = new Block[]{Block.cobblestone, Block.stairDouble, Block.stairSingle, Block.stone, Block.sandStone, Block.cobblestoneMossy, Block.oreIron, Block.blockSteel, Block.oreCoal, Block.blockGold, Block.oreGold, Block.oreDiamond, Block.blockDiamond, Block.ice, Block.netherrack, Block.oreLapis, Block.blockLapis, Block.stoneOvenIdle, Block.stoneOvenActive, Block.oreRedstone, Block.oreRedstoneGlowing, Block.oreEmerald, Block.oreRuby, Block.blockCoal, Block.smoothStone, Block.stoneBricks};
+ 
+ 	protected ItemPickaxe(int var1, EnumToolMaterial var2) {
+ 		super(var1, 2, var2, blocksEffectiveAgainst);
+--- net/minecraft/src/MovementInputFromOptions.java
++++ net/minecraft/src/MovementInputFromOptions.java
+@@ -34,6 +34,10 @@
+ 			var3 = 5;
+ 		}
+ 
++		if (var1 == this.gameSettings.keyBindZoom.keyCode) {
++			var3 = 6;
++		}
++
+ 		if(var3 >= 0) {
+ 			this.movementKeyStates[var3] = var2;
+ 		}
+@@ -44,12 +48,12 @@
+ 		for(int var1 = 0; var1 < 10; ++var1) {
+ 			this.movementKeyStates[var1] = false;
+ 		}
+-
+ 	}
+ 
+ 	public void updatePlayerMoveState(EntityPlayer var1) {
+ 		this.moveStrafe = 0.0F;
+ 		this.moveForward = 0.0F;
++		this.gameSettings.zoom = false;
+ 		if(this.movementKeyStates[0]) {
+ 			++this.moveForward;
+ 		}
+@@ -64,6 +68,10 @@
+ 
+ 		if(this.movementKeyStates[3]) {
+ 			--this.moveStrafe;
++		}
++
++		if (this.movementKeyStates[6]) {
++			this.gameSettings.zoom = true;
+ 		}
+ 
+ 		this.jump = this.movementKeyStates[4];
+--- net/minecraft/src/Item.java
++++ net/minecraft/src/Item.java
+@@ -16,26 +16,26 @@
+ 	public static Item diamond = (new Item(8)).setIconCoord(7, 3).setItemName("emerald");
+ 	public static Item ingotIron = (new Item(9)).setIconCoord(7, 1).setItemName("ingotIron");
+ 	public static Item ingotGold = (new Item(10)).setIconCoord(7, 2).setItemName("ingotGold");
+-	public static Item swordSteel = (new ItemSword(11, EnumToolMaterial.IRON)).setIconCoord(2, 4).setItemName("swordIron");
+-	public static Item swordWood = (new ItemSword(12, EnumToolMaterial.WOOD)).setIconCoord(0, 4).setItemName("swordWood");
+-	public static Item shovelWood = (new ItemSpade(13, EnumToolMaterial.WOOD)).setIconCoord(0, 5).setItemName("shovelWood");
++	//public static Item swordSteel = (new ItemSword(11, EnumToolMaterial.IRON)).setIconCoord(2, 4).setItemName("swordIron");
++	//public static Item swordWood = (new ItemSword(12, EnumToolMaterial.WOOD)).setIconCoord(0, 4).setItemName("swordWood");
++	//public static Item shovelWood = (new ItemSpade(13, EnumToolMaterial.WOOD)).setIconCoord(0, 5).setItemName("shovelWood");
+ 	public static Item pickaxeWood = (new ItemPickaxe(14, EnumToolMaterial.WOOD)).setIconCoord(0, 6).setItemName("pickaxeWood");
+-	public static Item axeWood = (new ItemAxe(15, EnumToolMaterial.WOOD)).setIconCoord(0, 7).setItemName("hatchetWood");
+-	public static Item swordStone = (new ItemSword(16, EnumToolMaterial.STONE)).setIconCoord(1, 4).setItemName("swordStone");
++	//public static Item axeWood = (new ItemAxe(15, EnumToolMaterial.WOOD)).setIconCoord(0, 7).setItemName("hatchetWood");
++	//public static Item swordStone = (new ItemSword(16, EnumToolMaterial.STONE)).setIconCoord(1, 4).setItemName("swordStone");
+ 	public static Item shovelStone = (new ItemSpade(17, EnumToolMaterial.STONE)).setIconCoord(1, 5).setItemName("shovelStone");
+ 	public static Item pickaxeStone = (new ItemPickaxe(18, EnumToolMaterial.STONE)).setIconCoord(1, 6).setItemName("pickaxeStone");
+ 	public static Item axeStone = (new ItemAxe(19, EnumToolMaterial.STONE)).setIconCoord(1, 7).setItemName("hatchetStone");
+-	public static Item swordDiamond = (new ItemSword(20, EnumToolMaterial.EMERALD)).setIconCoord(3, 4).setItemName("swordDiamond");
+-	public static Item shovelDiamond = (new ItemSpade(21, EnumToolMaterial.EMERALD)).setIconCoord(3, 5).setItemName("shovelDiamond");
++	//public static Item swordDiamond = (new ItemSword(20, EnumToolMaterial.EMERALD)).setIconCoord(3, 4).setItemName("swordDiamond");
++	//public static Item shovelDiamond = (new ItemSpade(21, EnumToolMaterial.EMERALD)).setIconCoord(3, 5).setItemName("shovelDiamond");
+ 	public static Item pickaxeDiamond = (new ItemPickaxe(22, EnumToolMaterial.EMERALD)).setIconCoord(3, 6).setItemName("pickaxeDiamond");
+-	public static Item axeDiamond = (new ItemAxe(23, EnumToolMaterial.EMERALD)).setIconCoord(3, 7).setItemName("hatchetDiamond");
++	//public static Item axeDiamond = (new ItemAxe(23, EnumToolMaterial.EMERALD)).setIconCoord(3, 7).setItemName("hatchetDiamond");
+ 	public static Item stick = (new Item(24)).setIconCoord(5, 3).setFull3D().setItemName("stick");
+ 	public static Item bowlEmpty = (new Item(25)).setIconCoord(7, 4).setItemName("bowl");
+ 	public static Item bowlSoup = (new ItemSoup(26, 10)).setIconCoord(8, 4).setItemName("mushroomStew");
+ 	public static Item swordGold = (new ItemSword(27, EnumToolMaterial.GOLD)).setIconCoord(4, 4).setItemName("swordGold");
+-	public static Item shovelGold = (new ItemSpade(28, EnumToolMaterial.GOLD)).setIconCoord(4, 5).setItemName("shovelGold");
+-	public static Item pickaxeGold = (new ItemPickaxe(29, EnumToolMaterial.GOLD)).setIconCoord(4, 6).setItemName("pickaxeGold");
+-	public static Item axeGold = (new ItemAxe(30, EnumToolMaterial.GOLD)).setIconCoord(4, 7).setItemName("hatchetGold");
++	//public static Item shovelGold = (new ItemSpade(28, EnumToolMaterial.GOLD)).setIconCoord(4, 5).setItemName("shovelGold");
++	//public static Item pickaxeGold = (new ItemPickaxe(29, EnumToolMaterial.GOLD)).setIconCoord(4, 6).setItemName("pickaxeGold");
++	//public static Item axeGold = (new ItemAxe(30, EnumToolMaterial.GOLD)).setIconCoord(4, 7).setItemName("hatchetGold");
+ 	public static Item silk = (new Item(31)).setIconCoord(8, 0).setItemName("string");
+ 	public static Item feather = (new Item(32)).setIconCoord(8, 1).setItemName("feather");
+ 	public static Item gunpowder = (new Item(33)).setIconCoord(8, 2).setItemName("sulphur");
+@@ -55,18 +55,18 @@
+ 	public static Item plateChain = (new ItemArmor(47, 1, 1, 1)).setIconCoord(1, 1).setItemName("chestplateChain");
+ 	public static Item legsChain = (new ItemArmor(48, 1, 1, 2)).setIconCoord(1, 2).setItemName("leggingsChain");
+ 	public static Item bootsChain = (new ItemArmor(49, 1, 1, 3)).setIconCoord(1, 3).setItemName("bootsChain");
+-	public static Item helmetSteel = (new ItemArmor(50, 2, 2, 0)).setIconCoord(2, 0).setItemName("helmetIron");
+-	public static Item plateSteel = (new ItemArmor(51, 2, 2, 1)).setIconCoord(2, 1).setItemName("chestplateIron");
+-	public static Item legsSteel = (new ItemArmor(52, 2, 2, 2)).setIconCoord(2, 2).setItemName("leggingsIron");
+-	public static Item bootsSteel = (new ItemArmor(53, 2, 2, 3)).setIconCoord(2, 3).setItemName("bootsIron");
+-	public static Item helmetDiamond = (new ItemArmor(54, 3, 3, 0)).setIconCoord(3, 0).setItemName("helmetDiamond");
+-	public static Item plateDiamond = (new ItemArmor(55, 3, 3, 1)).setIconCoord(3, 1).setItemName("chestplateDiamond");
+-	public static Item legsDiamond = (new ItemArmor(56, 3, 3, 2)).setIconCoord(3, 2).setItemName("leggingsDiamond");
+-	public static Item bootsDiamond = (new ItemArmor(57, 3, 3, 3)).setIconCoord(3, 3).setItemName("bootsDiamond");
+-	public static Item helmetGold = (new ItemArmor(58, 1, 4, 0)).setIconCoord(4, 0).setItemName("helmetGold");
+-	public static Item plateGold = (new ItemArmor(59, 1, 4, 1)).setIconCoord(4, 1).setItemName("chestplateGold");
+-	public static Item legsGold = (new ItemArmor(60, 1, 4, 2)).setIconCoord(4, 2).setItemName("leggingsGold");
+-	public static Item bootsGold = (new ItemArmor(61, 1, 4, 3)).setIconCoord(4, 3).setItemName("bootsGold");
++	//public static Item helmetSteel = (new ItemArmor(50, 2, 2, 0)).setIconCoord(2, 0).setItemName("helmetIron");
++	//public static Item plateSteel = (new ItemArmor(51, 2, 2, 1)).setIconCoord(2, 1).setItemName("chestplateIron");
++	//public static Item legsSteel = (new ItemArmor(52, 2, 2, 2)).setIconCoord(2, 2).setItemName("leggingsIron");
++	//public static Item bootsSteel = (new ItemArmor(53, 2, 2, 3)).setIconCoord(2, 3).setItemName("bootsIron");
++	//public static Item helmetDiamond = (new ItemArmor(54, 3, 3, 0)).setIconCoord(3, 0).setItemName("helmetDiamond");
++	//public static Item plateDiamond = (new ItemArmor(55, 3, 3, 1)).setIconCoord(3, 1).setItemName("chestplateDiamond");
++	//public static Item legsDiamond = (new ItemArmor(56, 3, 3, 2)).setIconCoord(3, 2).setItemName("leggingsDiamond");
++	//public static Item bootsDiamond = (new ItemArmor(57, 3, 3, 3)).setIconCoord(3, 3).setItemName("bootsDiamond");
++	//public static Item helmetGold = (new ItemArmor(58, 1, 4, 0)).setIconCoord(4, 0).setItemName("helmetGold");
++	//public static Item plateGold = (new ItemArmor(59, 1, 4, 1)).setIconCoord(4, 1).setItemName("chestplateGold");
++	//public static Item legsGold = (new ItemArmor(60, 1, 4, 2)).setIconCoord(4, 2).setItemName("leggingsGold");
++	//public static Item bootsGold = (new ItemArmor(61, 1, 4, 3)).setIconCoord(4, 3).setItemName("bootsGold");
+ 	public static Item flint = (new Item(62)).setIconCoord(6, 0).setItemName("flint");
+ 	public static Item porkRaw = (new ItemFood(63, 3, true)).setIconCoord(7, 5).setItemName("porkchopRaw");
+ 	public static Item porkCooked = (new ItemFood(64, 8, true)).setIconCoord(8, 5).setItemName("porkchopCooked");
+@@ -109,8 +109,108 @@
+ 	public static Item cookie = (new ItemCookie(101, 1, false, 8)).setIconCoord(12, 5).setItemName("cookie");
+ 	public static ItemMap mapItem = (ItemMap)(new ItemMap(102)).setIconCoord(12, 3).setItemName("map");
+ 	public static ItemShears shears = (ItemShears)(new ItemShears(103)).setIconCoord(13, 5).setItemName("shears");
+-	public static Item record13 = (new ItemRecord(2000, "13")).setIconCoord(0, 15).setItemName("record");
+-	public static Item recordCat = (new ItemRecord(2001, "cat")).setIconCoord(1, 15).setItemName("record");
++	public static Item record13 = (new ItemRecord(2000, "13")).setIconCoord(0, 15).setItemName("record13");
++	public static Item recordCat = (new ItemRecord(2001, "cat")).setIconCoord(1, 15).setItemName("recordCat");
++
++	/* New Items  */
++	// Offset: 3000
++
++	// Dust
++	public static Item coalDust = (new Item(3000)).setIconCoord(5, 6).setItemName("coalDust");
++	public static Item ironDust = (new ItemDust(3001, EnumDustMaterial.IRON)).setIconCoord(5, 8).setItemName("ironDust");
++	public static Item diamondDust = (new ItemDust(3002, EnumDustMaterial.DIAMOND)).setIconCoord(5, 7).setItemName("diamondDust");
++
++	// Shards
++	public static Item diamondShard = (new Item(3003)).setIconCoord(6, 6).setItemName("diamondShard");
++	public static Item emeraldShard = (new Item(3004)).setIconCoord(6, 8).setItemName("emeraldShard");
++	public static Item rubyShard = (new Item(3005)).setIconCoord(6, 7).setItemName("rubyShard");
++
++	// Chainmail fragment
++	public static Item chainmailFragment = (new Item(3006)).setIconCoord(0, 9).setItemName("chainmailFragment");
++
++	// Wooden bat
++	public static Item bat = (new ItemMelee(3007, EnumMeleeMaterial.M_BAT)).setIconCoord(0, 4).setItemName("bat");
++
++	// Stone mace
++	public static Item mace = (new ItemMelee(3008, EnumMeleeMaterial.M_MACE)).setIconCoord(1, 4).setItemName("mace");
++
++	// Spear
++	public static Item spear = (new ItemMelee(3032, EnumMeleeMaterial.M_SPEAR)).setIconCoord(0, 5).setItemName("spear");
++
++	// Hammers
++	public static Item stoneHammer = (new ItemHammer(3009, EnumHammerMaterial.STONE)).setIconCoord(3, 4).setItemName("stoneHammer");
++	public static Item ironHammer = (new ItemHammer(3010, EnumHammerMaterial.IRON)).setIconCoord(4, 4).setItemName("ironHammer");
++
++	// Upgradable Armor
++	// none
++	public static Item ironHelmet = (new ItemUpgradableArmor(3011, 0, 0));
++	public static Item ironChest = (new ItemUpgradableArmor(3012, 1, 0));
++	public static Item ironLegs = (new ItemUpgradableArmor(3013, 2, 0));
++	public static Item ironBoots = (new ItemUpgradableArmor(3014, 3, 0));
++	// diamond
++	public static Item ironHelmetD = (new ItemUpgradableArmor(3019, 0, 1));
++	public static Item ironChestD = (new ItemUpgradableArmor(3020, 1, 1));
++	public static Item ironLegsD = (new ItemUpgradableArmor(3021, 2, 1));
++	public static Item ironBootsD = (new ItemUpgradableArmor(3022, 3, 1));
++	// emerald
++	public static Item ironHelmetE = (new ItemUpgradableArmor(3023, 0, 2));
++	public static Item ironChestE = (new ItemUpgradableArmor(3024, 1, 2));
++	public static Item ironLegsE = (new ItemUpgradableArmor(3025, 2, 2));
++	public static Item ironBootsE = (new ItemUpgradableArmor(3026, 3, 2));
++	// ruby
++	public static Item ironHelmetR = (new ItemUpgradableArmor(3027, 0, 3));
++	public static Item ironChestR = (new ItemUpgradableArmor(3028, 1, 3));
++	public static Item ironLegsR = (new ItemUpgradableArmor(3029, 2, 3));
++	public static Item ironBootsR = (new ItemUpgradableArmor(3030, 3, 3));
++
++	// Iron Nugget
++	public static Item ironNugget = (new Item(3015)).setIconCoord(3, 0).setItemName("ironNugget");
++
++	// Upgrade Slot
++	public static Item upgradeSlot = (new ItemUpgradeSlot(3016)).setIconCoord(4, 0).setItemName("upgradeSlot");
++
++	// Rock
++	public static Item rock = (new Item(3017)).setIconCoord(3, 1).setItemName("rock");
++
++	// Redstone rock
++	public static Item redstoneRock = (new Item(3018)).setIconCoord(3, 2).setItemName("redstoneRock");
++
++	// Iron Sword
++	public static Item ironSword = (new ItemMelee(3031, EnumMeleeMaterial.M_SWORD)).setIconCoord(2, 4).setItemName("ironSword");
++
++	// Poop (?)
++	public static Item poop = (new Item(3033)).setIconCoord(3, 3).setItemName("poop");
++
++	// Fertilizer
++	public static Item fertilizer = (new ItemFertilizer(3034));
++
++	// Iron Sword Upgrades
++	public static Item ironSwordI = (new ItemMelee(3035, EnumMeleeMaterial.M_SWORD)).decreaseDurability(25).increaseDamage(2).setIconCoord(2, 4).setItemName("ironSword.iron");
++	public static Item ironSwordD = (new ItemMelee(3036, EnumMeleeMaterial.M_SWORD)).decreaseDurability(50).increaseDamage(5).setIconCoord(2, 4).setItemName("ironSword.diamond");
++
++	// Knife
++	public static Item knife = (new ItemKnife(3037));
++
++	// Hay
++	public static Item hay = (new Item(3038)).setIconCoord(4, 6).setItemName("hay");
++
++	// Cloth
++	public static Item cloth = (new Item(3039)).setIconCoord(0, 7).setItemName("cloth");
++
++	// Pillow
++	public static Item pillow = (new Item(3040)).setIconCoord(1, 9).setItemName("pillow");
++
++	// Grape
++	public static Item grape = (new ItemFood(3041, 2, false)).setIconCoord(15, 0).setItemName("grape");
++
++	// Brews
++	public static Item bottle = (new Item(3042)).setIconCoord(9, 6).setItemName("bottle");
++	public static Item wine = (new ItemFluid(3043, 5)).setIconCoord(10, 6).setItemName("wine");
++	public static Item kvass = (new ItemFluid(3044, 6)).setIconCoord(11, 6).setItemName("kvass");
++	public static Item beer = (new ItemFluid(3045, 4)).setIconCoord(12, 6).setItemName("beer");
++	public static Item unknownBrew = (new ItemFluid(3046, -2)).setIconCoord(13, 6).setItemName("unknownbrew");
++	public static Item cider = (new ItemFluid(3047, 4)).setIconCoord(12, 7).setItemName("cider");
++
+ 	public final int shiftedIndex;
+ 	protected int maxStackSize = 64;
+ 	private int maxDamage = 0;
+@@ -118,7 +218,7 @@
+ 	protected boolean bFull3D = false;
+ 	protected boolean hasSubtypes = false;
+ 	private Item containerItem = null;
+-	private String itemName;
++	protected String itemName;
+ 
+ 	protected Item(int var1) {
+ 		this.shiftedIndex = 256 + var1;
+@@ -129,6 +229,13 @@
+ 		itemsList[256 + var1] = this;
+ 	}
+ 
++	public String getDamage(int i) {
++		String name = "Damage: ";
++		String value = String.valueOf(this.getDmg());
++		String[] ret = new String[]{name, value};
++		return ret[i];
++	}
++
+ 	public Item setIconIndex(int var1) {
+ 		this.iconIndex = var1;
+ 		return this;
+@@ -201,6 +308,8 @@
+ 	public boolean onBlockDestroyed(ItemStack var1, int var2, int var3, int var4, int var5, EntityLiving var6) {
+ 		return false;
+ 	}
++
++	public int getDmg() { return 1; }
+ 
+ 	public int getDamageVsEntity(Entity var1) {
+ 		return 1;
+--- net/minecraft/src/Purity.java
++++ net/minecraft/src/Purity.java
+@@ -4,7 +4,6 @@
+     public static int majorVersion = 1;
+     public static int minorVersion = 0;
+     public static int revision = 0;
+-    public static char iteration = 'a';
+ 
+     public static String name = "Purity";
+ 
+@@ -15,10 +14,17 @@
+     public boolean isDebug() { return this.debug; }
+ 
+     public String getTitle() {
+-        return this.title + " [" +
+-            String.valueOf(this.majorVersion) + "." +
+-            String.valueOf(this.minorVersion) + "." +
+-            String.valueOf(this.revision) + iteration + "]";
++        return this.title + " " +
++            String.valueOf(this.majorVersion) + "." +
++            String.valueOf(this.minorVersion) + "." +
++            String.valueOf(this.revision);
++    }
++
++    public String getVersion() {
++        return
++            String.valueOf(this.majorVersion) + "." +
++            String.valueOf(this.minorVersion) + "." +
++            String.valueOf(this.revision);
+     }
+ 
+     public int max2(int a, int b) {
+--- net/minecraft/src/ShapelessRecipes.java
++++ net/minecraft/src/ShapelessRecipes.java
+@@ -5,52 +5,55 @@
+ import java.util.List;
+ 
+ public class ShapelessRecipes implements IRecipe {
+-	private final ItemStack recipeOutput;
+-	private final List recipeItems;
+-
+-	public ShapelessRecipes(ItemStack var1, List var2) {
+-		this.recipeOutput = var1;
+-		this.recipeItems = var2;
+-	}
+-
+-	public ItemStack getRecipeOutput() {
+-		return this.recipeOutput;
+-	}
+-
+-	public boolean matches(InventoryCrafting var1) {
+-		ArrayList var2 = new ArrayList(this.recipeItems);
+-
+-		for(int var3 = 0; var3 < 3; ++var3) {
+-			for(int var4 = 0; var4 < 3; ++var4) {
+-				ItemStack var5 = var1.func_21103_b(var4, var3);
+-				if(var5 != null) {
+-					boolean var6 = false;
+-					Iterator var7 = var2.iterator();
+-
+-					while(var7.hasNext()) {
+-						ItemStack var8 = (ItemStack)var7.next();
+-						if(var5.itemID == var8.itemID && (var8.getItemDamage() == -1 || var5.getItemDamage() == var8.getItemDamage())) {
+-							var6 = true;
+-							var2.remove(var8);
+-							break;
+-						}
+-					}
+-
+-					if(!var6) {
+-						return false;
+-					}
+-				}
+-			}
+-		}
+-
+-		return var2.isEmpty();
+-	}
+-
+-	public ItemStack getCraftingResult(InventoryCrafting var1) {
+-		return this.recipeOutput.copy();
+-	}
+-
+-	public int getRecipeSize() {
+-		return this.recipeItems.size();
+-	}
++    private final ItemStack recipeOutput;
++    private final List recipeItems;
++
++    public ShapelessRecipes(ItemStack output, List items) {
++        this.recipeOutput = output;
++        this.recipeItems = items;
++    }
++
++    public ItemStack getRecipeOutput() { return this.recipeOutput; }
++
++    public boolean matches(InventoryCrafting inv) {
++        ArrayList items = new ArrayList(this.recipeItems);
++
++        for (int x = 0; x < 3; ++x) {
++            for (int y = 0; y < 3; ++y) {
++                ItemStack item = inv.func_21103_b(x, y);
++                if (item != null) {
++                    boolean valid = false;
++                    Iterator itemsIter = items.iterator();
++
++                    while (itemsIter.hasNext()) {
++                        ItemStack cItem = (ItemStack)itemsIter.next();
++                        if (item.itemID == cItem.itemID &&
++                            (cItem.getItemDamage() == -1 ||
++                             item.getItemDamage() == cItem.getItemDamage() ||
++                             (item.getItem().getMaxDamage() > 0 && item.getItemDamage() > 0))) {
++                            if (item.getItem().getMaxDamage() > 0 &&
++                                item.getItemDamage() >= item.getItem().getMaxDamage()) {
++                                inv.makeSlotEmpty(x, y);
++                                return false;
++                            }
++                            valid = true;
++                            items.remove(cItem);
++                            break;
++                        }
++                    }
++                    if (!valid) return false;
++                }
++            }
++        }
++        return items.isEmpty();
++    }
++
++    public ItemStack getCraftingResult(InventoryCrafting inv) {
++        return this.recipeOutput.copy();
++    }
++
++    public int getRecipeSize() { return this.recipeItems.size(); }
++
++    public boolean matchesSmith(InventorySmithing inv) { return false; }
++    public ItemStack getSmithResult(InventorySmithing inv) { return null; }
+ }
+--- net/minecraft/src/Container.java
++++ net/minecraft/src/Container.java
+@@ -160,6 +160,14 @@
+ 
+ 	}
+ 
++	public void onSmithingGuiClosed(EntityPlayer ply) {
++		InventoryPlayer inv = ply.inventory;
++		if (inv.getItemStack() != null) {
++			ply.dropPlayerItem(inv.getItemStack());
++			inv.setItemStack((ItemStack)null);
++		}
++	}
++
+ 	public void onCraftMatrixChanged(IInventory var1) {
+ 		this.updateCraftingResults();
+ 	}
+--- net/minecraft/src/BlockReed.java
++++ net/minecraft/src/BlockReed.java
+@@ -32,7 +32,20 @@
+ 
+ 	public boolean canPlaceBlockAt(World var1, int var2, int var3, int var4) {
+ 		int var5 = var1.getBlockId(var2, var3 - 1, var4);
+-		return var5 == this.blockID ? true : (var5 != Block.grass.blockID && var5 != Block.dirt.blockID ? false : (var1.getBlockMaterial(var2 - 1, var3 - 1, var4) == Material.water ? true : (var1.getBlockMaterial(var2 + 1, var3 - 1, var4) == Material.water ? true : (var1.getBlockMaterial(var2, var3 - 1, var4 - 1) == Material.water ? true : var1.getBlockMaterial(var2, var3 - 1, var4 + 1) == Material.water))));
++		return var5 == this.blockID
++			? true
++			: (var5 != Block.grass.blockID &&
++			   var5 != Block.dirt.blockID &&
++			   var5 != Block.sand.blockID &&
++			   var5 != Block.blockClay.blockID
++			   ? false
++			   : (var1.getBlockMaterial(var2 - 1, var3 - 1, var4) == Material.water
++				  ? true
++				  : (var1.getBlockMaterial(var2 + 1, var3 - 1, var4) == Material.water
++					 ? true
++					 : (var1.getBlockMaterial(var2, var3 - 1, var4 - 1) == Material.water
++						? true
++						: var1.getBlockMaterial(var2, var3 - 1, var4 + 1) == Material.water))));
+ 	}
+ 
+ 	public void onNeighborBlockChange(World var1, int var2, int var3, int var4, int var5) {
+--- net/minecraft/src/ItemTool.java
++++ net/minecraft/src/ItemTool.java
+@@ -16,11 +16,12 @@
+ 		this.damageVsEntity = var2 + var3.getDamageVsEntity();
+ 	}
+ 
++	public int getDmg() { return this.damageVsEntity; }
++
+ 	public float getStrVsBlock(ItemStack var1, Block var2) {
+ 		for(int var3 = 0; var3 < this.blocksEffectiveAgainst.length; ++var3) {
+-			if(this.blocksEffectiveAgainst[var3] == var2) {
++			if(this.blocksEffectiveAgainst[var3] == var2)
+ 				return this.efficiencyOnProperMaterial;
+-			}
+ 		}
+ 
+ 		return 1.0F;
+--- net/minecraft/src/ContainerSmithing.java
++++ net/minecraft/src/ContainerSmithing.java
+@@ -25,8 +25,7 @@
+         // smithResult [2]
+         this.addSlot(new SlotSmithing(inv.player,
+                                       smithResult, slotsContainer,
+-                                      2, 112, 35,
+-                                      EnumSmithingSlotType.RESULT));
++                                      2, 112, 35));
+ 
+         // Player Inventory
+         int pX, pY;
+--- /dev/null
++++ net/minecraft/src/BlockGrapeSapling.java
+@@ -1,0 +1,31 @@
++package net.minecraft.src;
++
++import java.util.Random;
++
++public class BlockGrapeSapling extends BlockFlower {
++  protected BlockGrapeSapling(int id) {
++    super(id, 200);
++    float bsub = 0.4F;
++    this.setBlockBounds(0.5F - bsub, 0.0F, 0.5F - bsub, 0.5F + bsub, bsub * 2.0F, 0.5F + bsub);
++  }
++
++  public void updateTick(World w, int x, int y, int z, Random rand) {
++    if (!w.multiplayerWorld) {
++      super.updateTick(w, x, y, z, rand);
++      if (w.getBlockLightValue(x, y + 1, z) >= 9 && rand.nextInt(30) == 0) {
++        this.generateBush(w, x, y, z);
++      }
++    }
++  }
++
++  public int getBlockTextureFromSide(int facing) {
++    return 200;
++  }
++
++  public void generateBush(World w, int x, int y, int z) {
++    w.setBlockAndMetadata(x, y - 1, z, Block.wood.blockID, 0);
++    w.setBlockAndMetadata(x, y, z, Block.grapeLeaves.blockID, 0);
++    if (!getIsBlockSolid(w, x, y + 1, z, 0))
++      w.setBlockAndMetadata(x, y + 1, z, Block.grapeLeaves.blockID, 0);
++  }
++}
+--- net/minecraft/src/BlockFarmland.java
++++ net/minecraft/src/BlockFarmland.java
+@@ -43,13 +43,6 @@
+ 
+ 	}
+ 
+-	public void onEntityWalking(World var1, int var2, int var3, int var4, Entity var5) {
+-		if(var1.rand.nextInt(4) == 0) {
+-			var1.setBlockWithNotify(var2, var3, var4, Block.dirt.blockID);
+-		}
+-
+-	}
+-
+ 	private boolean isCropsNearby(World var1, int var2, int var3, int var4) {
+ 		byte var5 = 0;
+ 
+--- net/minecraft/src/GameSettings.java
++++ net/minecraft/src/GameSettings.java
+@@ -9,7 +9,7 @@
+ import org.lwjgl.input.Keyboard;
+ 
+ public class GameSettings {
+-	private static final String[] RENDER_DISTANCES = new String[]{"options.renderDistance.far", "options.renderDistance.normal", "options.renderDistance.short", "options.renderDistance.tiny"};
++	private static final String[] RENDER_DISTANCES = new String[]{"options.renderDistance.veryFar", "options.renderDistance.far", "options.renderDistance.normal", "options.renderDistance.short", "options.renderDistance.tiny"};
+ 	private static final String[] DIFFICULTIES = new String[]{"options.difficulty.peaceful", "options.difficulty.easy", "options.difficulty.normal", "options.difficulty.hard"};
+ 	private static final String[] GUISCALES = new String[]{"options.guiScale.auto", "options.guiScale.small", "options.guiScale.normal", "options.guiScale.large"};
+ 	private static final String[] LIMIT_FRAMERATES = new String[]{"performance.max", "performance.balanced", "performance.powersaver"};
+@@ -18,6 +18,8 @@
+ 	public float mouseSensitivity = 0.5F;
+ 	public boolean invertMouse = false;
+ 	public int renderDistance = 0;
++	public boolean consoleGamma = false;
++	public float fov = 0.5F;
+ 	public boolean viewBobbing = true;
+ 	public boolean anaglyph = false;
+ 	public boolean advancedOpengl = false;
+@@ -35,7 +37,8 @@
+ 	public KeyBinding keyBindChat = new KeyBinding("key.chat", 20);
+ 	public KeyBinding keyBindToggleFog = new KeyBinding("key.fog", 33);
+ 	public KeyBinding keyBindSneak = new KeyBinding("key.sneak", 42);
+-	public KeyBinding[] keyBindings = new KeyBinding[]{this.keyBindForward, this.keyBindLeft, this.keyBindBack, this.keyBindRight, this.keyBindJump, this.keyBindSneak, this.keyBindDrop, this.keyBindInventory, this.keyBindChat, this.keyBindToggleFog};
++	public KeyBinding keyBindZoom  = new KeyBinding("key.zoom", 44);
++	public KeyBinding[] keyBindings = new KeyBinding[]{this.keyBindForward, this.keyBindLeft, this.keyBindBack, this.keyBindRight, this.keyBindJump, this.keyBindSneak, this.keyBindDrop, this.keyBindInventory, this.keyBindChat, this.keyBindToggleFog, this.keyBindZoom};
+ 	protected Minecraft mc;
+ 	private File optionsFile;
+ 	public int difficulty = 2;
+@@ -49,6 +52,10 @@
+ 	public float field_22272_F = 1.0F;
+ 	public float field_22271_G = 1.0F;
+ 	public int guiScale = 0;
++	public float guiGapHorizontal = 0.0F;
++	public float guiGapVertical = 0.0F;
++
++	public boolean zoom = false;
+ 
+ 	public GameSettings(Minecraft var1, File var2) {
+ 		this.mc = var1;
+@@ -88,6 +95,18 @@
+ 			this.mouseSensitivity = var2;
+ 		}
+ 
++		if (var1 == EnumOptions.FOV) {
++			this.fov = var2;
++		}
++
++		if (var1 == EnumOptions.GUI_GAP_HORIZONTAL) {
++			this.guiGapHorizontal = var2;
++		}
++
++		if (var1 == EnumOptions.GUI_GAP_VERTICAL) {
++			this.guiGapVertical = var2;
++		}
++
+ 	}
+ 
+ 	public void setOptionValue(EnumOptions var1, int var2) {
+@@ -95,6 +114,10 @@
+ 			this.invertMouse = !this.invertMouse;
+ 		}
+ 
++		if (var1 == EnumOptions.CONSOLE_GAMMA) {
++			this.consoleGamma = !this.consoleGamma;
++		}
++
+ 		if(var1 == EnumOptions.RENDER_DISTANCE) {
+ 			this.renderDistance = this.renderDistance + var2 & 3;
+ 		}
+@@ -139,7 +162,7 @@
+ 	}
+ 
+ 	public float getOptionFloatValue(EnumOptions var1) {
+-		return var1 == EnumOptions.MUSIC ? this.musicVolume : (var1 == EnumOptions.SOUND ? this.soundVolume : (var1 == EnumOptions.SENSITIVITY ? this.mouseSensitivity : 0.0F));
++		return var1 == EnumOptions.MUSIC ? this.musicVolume : (var1 == EnumOptions.SOUND ? this.soundVolume : (var1 == EnumOptions.SENSITIVITY ? this.mouseSensitivity : (var1 == EnumOptions.FOV ? this.fov : (var1 == EnumOptions.GUI_GAP_HORIZONTAL ? this.guiGapHorizontal : (var1 == EnumOptions.GUI_GAP_VERTICAL ? this.guiGapVertical : 0.0F)))));
+ 	}
+ 
+ 	public boolean getOptionOrdinalValue(EnumOptions var1) {
+@@ -154,6 +177,8 @@
+ 			return this.advancedOpengl;
+ 		case 5:
+ 			return this.ambientOcclusion;
++		case 6:
++			return this.consoleGamma;
+ 		default:
+ 			return false;
+ 		}
+@@ -164,7 +189,23 @@
+ 		String var3 = var2.translateKey(var1.getEnumString()) + ": ";
+ 		if(var1.getEnumFloat()) {
+ 			float var5 = this.getOptionFloatValue(var1);
+-			return var1 == EnumOptions.SENSITIVITY ? (var5 == 0.0F ? var3 + var2.translateKey("options.sensitivity.min") : (var5 == 1.0F ? var3 + var2.translateKey("options.sensitivity.max") : var3 + (int)(var5 * 200.0F) + "%")) : (var5 == 0.0F ? var3 + var2.translateKey("options.off") : var3 + (int)(var5 * 100.0F) + "%");
++			String out = "";
++
++			if (var1 == EnumOptions.SENSITIVITY) {
++				out = (var5 == 0.0F ? var3 + var2.translateKey("options.sensitivity.min") : (var5 == 1.0F ? var3 + var2.translateKey("options.sensitivity.max") : var3 + (int)(var5 * 200.0F) + "%"));
++			}
++			else if (var1 == EnumOptions.FOV) {
++				out = var3 + (int)(var5 * 100 + 20) + "*";
++			}
++			else if (var1 == EnumOptions.GUI_GAP_HORIZONTAL || var1 == EnumOptions.GUI_GAP_VERTICAL) {
++				out = (var5 == 0.0F ? var3 + var2.translateKey("options.off") : var3 + (int)(var5 * 10F) + " px");
++			}
++			else {
++				out = (var5 == 0.0F ? var3 + var2.translateKey("options.off") : var3 + (int)(var5 * 100) + "%");
++			}
++
++			//return var1 == EnumOptions.SENSITIVITY ? (var5 == 0.0F ? var3 + var2.translateKey("options.sensitivity.min") : (var5 == 1.0F ? var3 + var2.translateKey("options.sensitivity.max") : var3 + (int)(var5 * 200.0F) + "%")) : (var5 == 0.0F ? var3 + var2.translateKey("options.off") : var3 + (int)(var5 * 100.0F) + "%");
++			return out;
+ 		} else if(var1.getEnumBoolean()) {
+ 			boolean var4 = this.getOptionOrdinalValue(var1);
+ 			return var4 ? var3 + var2.translateKey("options.on") : var3 + var2.translateKey("options.off");
+@@ -203,6 +244,10 @@
+ 						this.mouseSensitivity = this.parseFloat(var3[1]);
+ 					}
+ 
++					if (var3[0].equals("fov")) {
++						this.fov = this.parseFloat(var3[1]);
++					}
++
+ 					if(var3[0].equals("invertYMouse")) {
+ 						this.invertMouse = var3[1].equals("true");
+ 					}
+@@ -215,6 +260,10 @@
+ 						this.guiScale = Integer.parseInt(var3[1]);
+ 					}
+ 
++					if (var3[0].equals("consoleGamma")) {
++						this.consoleGamma = var3[1].equals("true");
++					}
++
+ 					if(var3[0].equals("bobView")) {
+ 						this.viewBobbing = var3[1].equals("true");
+ 					}
+@@ -251,6 +300,14 @@
+ 						this.lastServer = var3[1];
+ 					}
+ 
++					if (var3[0].equals("guigaphorizontal")) {
++						this.guiGapHorizontal = this.parseFloat(var3[1]);
++					}
++
++					if (var3[0].equals("guigapvertical")) {
++						this.guiGapVertical = this.parseFloat(var3[1]);
++					}
++
+ 					for(int var4 = 0; var4 < this.keyBindings.length; ++var4) {
+ 						if(var3[0].equals("key_" + this.keyBindings[var4].keyDescription)) {
+ 							this.keyBindings[var4].keyCode = Integer.parseInt(var3[1]);
+@@ -289,6 +346,10 @@
+ 			var1.println("ao:" + this.ambientOcclusion);
+ 			var1.println("skin:" + this.skin);
+ 			var1.println("lastServer:" + this.lastServer);
++			var1.println("consoleGamma:" + this.consoleGamma);
++			var1.println("fov:" + this.fov);
++			var1.println("guigaphorizontal:" + this.guiGapHorizontal);
++			var1.println("guigapvertical:" + this.guiGapVertical);
+ 
+ 			for(int var2 = 0; var2 < this.keyBindings.length; ++var2) {
+ 				var1.println("key_" + this.keyBindings[var2].keyDescription + ":" + this.keyBindings[var2].keyCode);
+--- net/minecraft/src/GuiVideoSettings.java
++++ net/minecraft/src/GuiVideoSettings.java
+@@ -4,7 +4,7 @@
+ 	private GuiScreen field_22110_h;
+ 	protected String field_22107_a = "Video Settings";
+ 	private GameSettings guiGameSettings;
+-	private static EnumOptions[] field_22108_k = new EnumOptions[]{EnumOptions.GRAPHICS, EnumOptions.RENDER_DISTANCE, EnumOptions.AMBIENT_OCCLUSION, EnumOptions.FRAMERATE_LIMIT, EnumOptions.ANAGLYPH, EnumOptions.VIEW_BOBBING, EnumOptions.GUI_SCALE, EnumOptions.ADVANCED_OPENGL};
++	private static EnumOptions[] field_22108_k = new EnumOptions[]{EnumOptions.FOV, EnumOptions.GRAPHICS, EnumOptions.RENDER_DISTANCE, EnumOptions.AMBIENT_OCCLUSION, EnumOptions.FRAMERATE_LIMIT, EnumOptions.ANAGLYPH, EnumOptions.VIEW_BOBBING, /*EnumOptions.GUI_SCALE,*/ EnumOptions.ADVANCED_OPENGL, EnumOptions.CONSOLE_GAMMA};
+ 
+ 	public GuiVideoSettings(GuiScreen var1, GameSettings var2) {
+ 		this.field_22110_h = var1;
+@@ -43,11 +43,6 @@
+ 				this.mc.gameSettings.saveOptions();
+ 				this.mc.displayGuiScreen(this.field_22110_h);
+ 			}
+-
+-			ScaledResolution var2 = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
+-			int var3 = var2.getScaledWidth();
+-			int var4 = var2.getScaledHeight();
+-			this.setWorldAndResolution(this.mc, var3, var4);
+ 		}
+ 	}
+ 

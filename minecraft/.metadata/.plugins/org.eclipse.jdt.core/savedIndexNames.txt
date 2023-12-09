@@ -1,0 +1,19 @@
+INDEX VERSION 1.134+/disks/hdd/projects/retromcp/minecraft/.metadata/.plugins/org.eclipse.jdt.core
+2949097923.index
+399827122.index
+530300973.index
+550369327.index
+900730383.index
+3484234139.index
+1266435705.index
+3811381250.index
+2237050982.index
+3697738195.index
+3459650875.index
+1658896664.index
+3835516085.index
+253306147.index
+2397605559.index
+1865797976.index
+2657251040.index
+1167066822.index
