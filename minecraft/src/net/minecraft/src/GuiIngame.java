@@ -34,7 +34,7 @@ public class GuiIngame extends Gui {
 		int sWidth = var6;
 		int sHeight = var7;
 
-		int[] gap = {(int)(this.mc.gameSettings.guiGapHorizontal* 10), (int)(this.mc.gameSettings.guiGapVertical* 10)};
+		int[] gap = {(int)(this.mc.gameSettings.guiGapHorizontal * 10), (int)(this.mc.gameSettings.guiGapVertical * 10)};
 
 		FontRenderer var8 = this.mc.fontRenderer;
 		this.mc.entityRenderer.func_905_b();
