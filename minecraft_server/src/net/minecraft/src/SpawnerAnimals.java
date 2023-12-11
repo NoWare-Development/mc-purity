@@ -129,6 +129,9 @@ public final class SpawnerAnimals {
 											var43.setLocationAndAngles((double)var27, (double)var28, (double)var29, var0.rand.nextFloat() * 360.0F, 0.0F);
 											if(var43.getCanSpawnHere()) {
 												++var20;
+												if (var43 instanceof EntityNull && var0.getClosestPlayer(var43.posX, var43.posY, var43.posZ, 54.0D) != null) {
+													continue label130;
+												}
 												var0.entityJoinedWorld(var43);
 												func_21166_a(var43, var0, var27, var28, var29);
 												if(var20 >= var43.getMaxSpawnedInChunk()) {
