@@ -347,5 +347,15 @@ public class RecipesPurity {
                       new Object[]{"#@#", "# #", "#@#",
                                    Character.valueOf('#'), Block.wood,
                                    Character.valueOf('@'), Block.planks});
+
+        // Bow
+        mgr.addRecipe(new ItemStack(Item.bow, 1),
+                      new Object[]{" /#", "/  #", " /#",
+                                   Character.valueOf('/'), Item.stick,
+                                   Character.valueOf('#'), Item.silk});
+        mgr.addRecipe(new ItemStack(Item.bow, 1),
+                      new Object[]{"#/ ", "# /", "#/",
+                                   Character.valueOf('/'), Item.stick,
+                                   Character.valueOf('#'), Item.silk});
     }
 }
