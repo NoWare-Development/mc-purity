@@ -31,7 +31,10 @@ public class EntityTracker {
 					var4.updatePlayerEntity(var2);
 				}
 			}
-		} else if(var1 instanceof EntityFish) {
+		} else if (var1 instanceof EntityNull) {
+			this.trackEntity(var1, 64, 2);
+		}
+		else if(var1 instanceof EntityFish) {
 			this.trackEntity(var1, 64, 5, true);
 		} else if(var1 instanceof EntityArrow) {
 			this.trackEntity(var1, 64, 20, false);

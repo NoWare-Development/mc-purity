@@ -227,7 +227,11 @@ public class EntityTrackerEntry {
 
 			if(this.trackedEntity instanceof EntityBoat) {
 				return new Packet23VehicleSpawn(this.trackedEntity, 1);
-			} else if(this.trackedEntity instanceof IAnimals) {
+			}
+			else if(this.trackedEntity instanceof EntityNull) {
+				return new Packet24MobSpawn((EntityLiving)this.trackedEntity);
+			}
+			else if(this.trackedEntity instanceof IAnimals) {
 				return new Packet24MobSpawn((EntityLiving)this.trackedEntity);
 			} else if(this.trackedEntity instanceof EntityFish) {
 				return new Packet23VehicleSpawn(this.trackedEntity, 90);

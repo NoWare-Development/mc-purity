@@ -10,7 +10,7 @@ public class EntityNull extends EntityCreature {
     int x = MathHelper.floor_double(this.posX);
     int y = MathHelper.floor_double(this.boundingBox.minY);
     int z = MathHelper.floor_double(this.posZ);
-    return this.worldObj.getFullBlockLightValue(x, y, z) < 12 && !this.worldObj.canBlockSeeTheSky(x, y, z) && super.getCanSpawnHere();
+    return this.worldObj.getFullBlockLightValue(x, y, z) < 12 && /*!this.worldObj.canBlockSeeTheSky(x, y, z) && */ super.getCanSpawnHere();
   }
 
   public void onLivingUpdate() {
