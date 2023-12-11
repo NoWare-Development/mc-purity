@@ -150,6 +150,10 @@ public class Block {
 	// Barrel
 	public static final Block barrel = (new BlockBarrel(111)).setHardness(2.0F).setResistance(5.0F).setStepSound(soundWoodFootstep).setBlockName("barrel").disableNeighborNotifyOnMetadataChange();
 
+	// Sandstone slab
+	public static final Block sandStoneSlabSingle = (new BlockSandstoneSlab(112, false)).setBlockName("sandStoneSlab").disableNeighborNotifyOnMetadataChange();
+	public static final Block sandStoneSlabDouble = (new BlockSandstoneSlab(113, true)).setBlockName("sandStoneSlab").disableNeighborNotifyOnMetadataChange();
+
 	public int blockIndexInTexture;
 	public final int blockID;
 	protected float blockHardness;

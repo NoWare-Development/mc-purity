@@ -357,5 +357,7 @@ public class RecipesPurity {
                       new Object[]{"#/ ", "# /", "#/",
                                    Character.valueOf('/'), Item.stick,
                                    Character.valueOf('#'), Item.silk});
+
+        // Sandstone slab
     }
 }

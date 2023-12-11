@@ -1,8 +1,11 @@
 package net.minecraft.src;
 
 public class EntityNull extends EntityCreature {
+  private int livingTime;
+
   public EntityNull(World w) {
     super(w);
+    this.livingTime = 0;
   }
 
   public boolean getCanSpawnHere() {
@@ -19,6 +22,9 @@ public class EntityNull extends EntityCreature {
     if (nearest != null) {
       this.faceEntity(nearest, 180, 180);
     }
+
+    if (this.livingTime > 1500) this.setEntityDead();
+    this.livingTime++;
   }
 
   public int getMaxSpawnedInChunk() { return 1; }
