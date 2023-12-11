@@ -14,6 +14,7 @@ public class EntityNull extends EntityCreature {
   }
 
   public void onLivingUpdate() {
+    /*
     //if (this.worldObj.getLoadedEntityList().contains(this)) this.worldObj.setEntityDead(this);
     EntityPlayer nearest = this.worldObj.getClosestPlayer(this.posX, this.posY, this.posZ, 64.0D);
     if (this.worldObj.getClosestPlayer(this.posX, this.posY, this.posZ, 54.0D) != null) this.setEntityDead();
@@ -21,6 +22,7 @@ public class EntityNull extends EntityCreature {
     if (nearest != null) {
       this.faceEntity(nearest, 180, 180);
     }
+    */
   }
 
   public int getMaxSpawnedInChunk() { return 1; }

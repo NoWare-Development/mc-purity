@@ -3,7 +3,8 @@ package net.minecraft.src;
 public enum EnumCreatureType {
 	monster(IMob.class, 70, Material.air, false),
 	creature(EntityAnimal.class, 15, Material.air, true),
-	waterCreature(EntityWaterMob.class, 5, Material.water, true);
+	waterCreature(EntityWaterMob.class, 5, Material.water, true),
+	entitynull(EntityNull.class, 1, Material.air, true);
 
 	private final Class creatureClass;
 	private final int maxNumberOfCreature;

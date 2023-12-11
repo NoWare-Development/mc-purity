@@ -41,7 +41,7 @@ public class BiomeGenBase {
 		this.spawnableCreatureList.add(new SpawnListEntry(EntityPig.class, 10));
 		this.spawnableCreatureList.add(new SpawnListEntry(EntityChicken.class, 10));
 		this.spawnableCreatureList.add(new SpawnListEntry(EntityCow.class, 8));
-		this.spawnableCreatureList.add(new SpawnListEntry(EntityNull.class, 10));
+		//this.spawnableCreatureList.add(new SpawnListEntry(EntityNull.class, 10));
 		this.spawnableWaterCreatureList.add(new SpawnListEntry(EntitySquid.class, 10));
 	}
 

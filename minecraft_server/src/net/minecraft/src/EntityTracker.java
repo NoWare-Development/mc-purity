@@ -32,7 +32,7 @@ public class EntityTracker {
 				}
 			}
 		} else if (var1 instanceof EntityNull) {
-			this.trackEntity(var1, 64, 2);
+			this.trackEntity(var1, 128, 2);
 		}
 		else if(var1 instanceof EntityFish) {
 			this.trackEntity(var1, 64, 5, true);

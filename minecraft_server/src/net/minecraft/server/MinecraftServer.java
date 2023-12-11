@@ -60,6 +60,7 @@ public class MinecraftServer implements Runnable, ICommandListener {
 	public boolean spawnPeacefulMobs;
 	public boolean pvpOn;
 	public boolean allowFlight;
+	public boolean easterEgg;
 
 	public MinecraftServer() {
 		System.out.println("Penis");
@@ -85,6 +86,7 @@ public class MinecraftServer implements Runnable, ICommandListener {
 		this.spawnPeacefulMobs = this.propertyManagerObj.getBooleanProperty("spawn-animals", true);
 		this.pvpOn = this.propertyManagerObj.getBooleanProperty("pvp", true);
 		this.allowFlight = this.propertyManagerObj.getBooleanProperty("allow-flight", false);
+		this.easterEgg = this.propertyManagerObj.getBooleanProperty("easter-egg", false);
 		InetAddress var3 = null;
 		if(var2.length() > 0) {
 			var3 = InetAddress.getByName(var2);

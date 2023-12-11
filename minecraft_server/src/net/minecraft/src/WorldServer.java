@@ -21,6 +21,10 @@ public class WorldServer extends World {
 			var1.setEntityDead();
 		}
 
+		if (!this.mcServer.easterEgg && (var1 instanceof EntityNull)) {
+			var1.setEntityDead();
+		}
+
 		if(var1.riddenByEntity == null || !(var1.riddenByEntity instanceof EntityPlayer)) {
 			super.updateEntityWithOptionalForce(var1, var2);
 		}
