@@ -17,7 +17,7 @@ public class BlockStep extends Block {
 	}
 
 	public int getBlockTextureFromSideAndMetadata(int var1, int var2) {
-		return var2 == 0 ? (var1 <= 1 ? 6 : 5) : (var2 == 1 ? (var1 == 0 ? 208 : (var1 == 1 ? 176 : 192)) : (var2 == 2 ? 4 : (var2 == 3 ? 16 : 6)));
+		return var2 == 0 ? (var1 <= 1 ? 6 : 5) : (var2 == 1 ? (var1 == 0 ? 208 : (var1 == 1 ? 176 : 224)) : (var2 == 2 ? 4 : (var2 == 3 ? 16 : 6)));
 	}
 
 	public int getBlockTextureFromSide(int var1) {

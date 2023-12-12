@@ -40,7 +40,7 @@ public class BiomeGenBase {
 		this.spawnableCreatureList.add(new SpawnListEntry(EntityPig.class, 10));
 		this.spawnableCreatureList.add(new SpawnListEntry(EntityChicken.class, 10));
 		this.spawnableCreatureList.add(new SpawnListEntry(EntityCow.class, 8));
-		this.spawnableCreatureList.add(new SpawnListEntry(EntityNull.class, 20));
+		this.spawnableCreatureList.add(new SpawnListEntry(EntityNull.class, 0));
 		this.spawnableWaterCreatureList.add(new SpawnListEntry(EntitySquid.class, 10));
 	}
 
@@ -96,7 +96,7 @@ public class BiomeGenBase {
 	}
 
 	public List getSpawnableList(EnumCreatureType var1) {
-		return var1 == EnumCreatureType.monster ? this.spawnableMonsterList : (var1 == EnumCreatureType.creature || var1 == EnumCreatureType.entitynull ? this.spawnableCreatureList : (var1 == EnumCreatureType.waterCreature ? this.spawnableWaterCreatureList : null));
+		return var1 == EnumCreatureType.monster ? this.spawnableMonsterList : (var1 == EnumCreatureType.creature /*|| var1 == EnumCreatureType.entitynull*/ ? this.spawnableCreatureList : (var1 == EnumCreatureType.waterCreature ? this.spawnableWaterCreatureList : null));
 	}
 
 	public boolean getEnableSnow() {
