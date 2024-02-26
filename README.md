@@ -28,7 +28,7 @@ __For Other Launchers__:
 ## How to create server?
 1. Download __"purity_server.jar"__ from Releases
 2. Create __"start.bat"__/__"start.sh"__ file in the same folder which contains __"purity_server.jar"__
-3. Open your terminal and enter this command: `chmod +x start.sh` (Only on Linux)
+3. Open your terminal and enter this command: `chmod +x start.sh` (Only on Linux and macOS)
 4. Edit __"start.bat"__/__"start.sh"__
 5. Paste this into it:
    ``` sh
