@@ -25,13 +25,4 @@ __For Other Launchers__:
 8. Rename __"b1.7.3.json"__ in your folder to __"purity.json"__
 9. Enjoy
 
-## How to create server?
-1. Download __"purity_server.jar"__ from Releases
-2. Create __"start.bat"__/__"start.sh"__ file in the same folder which contains __"purity_server.jar"__
-3. Open your terminal and enter this command: `chmod +x start.sh` (Only on Linux and macOS)
-4. Edit __"start.bat"__/__"start.sh"__
-5. Paste this into it:
-   ``` sh
-   java -Xmx2048 -jar purity_server.jar nogui
-   ```
-6. Enjoy
+__I have trouble compiling the server. So no multiplayer for you, sorry!__
