@@ -32,6 +32,6 @@ __For Other Launchers__:
 4. Edit __"start.bat"__/__"start.sh"__
 5. Paste this into it:
    ``` sh
-   java -Xmx2048 -jar purity_server.jar nogui
+   java -Xmx2048m -Xms2048m -jar purity_server.jar nogui
    ```
 6. Enjoy
