@@ -14,6 +14,8 @@ __For MultiMC/PrismLauncher__:
 7. Click "OK"
 8. Done
 
+P.S.: You may need some instance tinkering (like change java).
+
 __For Other Launchers__: *__NOT SUPPORTED!__*
 
 ## How to create server?
