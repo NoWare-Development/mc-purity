@@ -14,9 +14,9 @@ __For MultiMC/PrismLauncher__:
 7. Click "OK"
 8. Done
 
-P.S.: You may need some instance tinkering (like change java).
+__P.S.__: You may need some instance tinkering (like change java).
 
-__For Other Launchers__: *__NOT SUPPORTED!__*
+__For Other Launchers__: <ins>**NOT SUPPORTED!**</ins>
 
 ## How to create server?
 1. Download __"purity_server.jar"__ from Releases
