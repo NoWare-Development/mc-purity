@@ -1,4 +1,9 @@
-# Minecraft Purity
+<div align="center" >
+
+<img src="https://noware-development.github.io/mc-purity/media/mc-purity-logo.png" ></img>
+
+</div>
+
 __Minecraft Purity__ is mod for Minecraft Beta 1.7.3
 
 Supported Java version is 8.
