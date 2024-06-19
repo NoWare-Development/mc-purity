@@ -74,12 +74,14 @@ a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50rem;
+  width: 25%;
+  margin: 0 auto;
 }
 
 .navigation__link {
   margin-right: 1rem;
   margin-left: 1rem;
+  padding-bottom: 0;
 }
 
 .banner {
@@ -96,6 +98,7 @@ a:hover {
 }
 
 .button__container {
+  margin: 1rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
