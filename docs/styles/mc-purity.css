@@ -172,13 +172,11 @@ footer {
               url("./../media/background_stone.png");
   padding-top: 2rem;
   padding-bottom: 2rem;
-  display: flex;
-  justify-content: center;
   box-shadow: 0 0 5vh 2vh rgba(0, 0, 0, 0.5);
 }
 
-.noware_link {
-  margin-left: 0.5rem;
+.powered_by_noware {
+  text-align: center;
 }
 
 .under_construction {
@@ -207,4 +205,12 @@ footer {
 
 .label_yellow {
   color: #FF5;
+}
+
+.copyright {
+  width: 35%;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  text-align: center;
+  margin: 2rem auto;
 }
