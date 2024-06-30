@@ -1,6 +1,6 @@
 @font-face {
   font-family: "minecraft";
-  src: url("./../fonts/minecraft.ttf");
+  src: url("https://noware-development.github.io/mc-purity/fonts/minecraft.ttf");
 }
 
 :root {
@@ -129,7 +129,7 @@ div.fgbottom,
   color: #FFF;
   --local-scale: calc(var(--scale, 1) * var(--global-scale));
   image-rendering: pixelated;
-  background-image: url("https://github.com/NoWare-Development/mc-purity/blob/pages/media/background.png");
+  background-image: url("https://noware-development.github.io/mc-purity/media/background.png");
   background-size: calc(var(--local-scale) * 32px);
   background-color: #404040;
   background-blend-mode: multiply;
@@ -140,7 +140,7 @@ div.fgbottom,
   color: #FFF;
   --local-scale: calc(var(--scale, 1) * var(--global-scale));
   image-rendering: pixelated;
-  background-image: url("https://github.com/NoWare-Development/mc-purity/blob/pages/media/background_stone.png");
+  background-image: url("https://noware-development.github.io/mc-purity/media/background_stone.png");
   background-size: calc(var(--local-scale) * 32px);
   background-color: #404040;
   background-blend-mode: multiply;
