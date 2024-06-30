@@ -1,0 +1,462 @@
+@font-face {
+  font-family: "minecraft";
+  src: url("./../fonts/minecraft.ttf");
+}
+
+:root {
+  --global-scale: 3;
+  --default-color: #FFFFFF;
+  --default-shadow: #3F3F3F;
+  font-family: "minecraft";
+}
+
+::-webkit-scrollbar {
+  width: calc(var(--global-scale) * 6px);
+  height: calc(var(--global-scale) * 6px);
+}
+
+::-webkit-scrollbar-corner
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  height: calc(var(--global-scale) * 32px);
+  box-shadow: inset
+              calc(var(--global-scale) * -1px)
+              calc(var(--global-scale) * -1px)
+              0
+              0
+              #808080;
+}
+
+a {
+  text-decoration: none;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+[contenteditable] {
+  outline: none;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --global-scale: 4;
+  }
+}
+
+@media (max-width: 1280px) {
+  :root {
+    --global-scale: 3;
+  }
+}
+
+@media (max-width: 1060px) {
+  :root {
+    --global-scale: 2;
+  }
+}
+
+@media (max-width: 700px) {
+  :root {
+    --global-scale: 1;
+  }
+}
+
+.grid {
+  display: grid;
+}
+
+body.grid {
+  height: 100vh;
+  grid-template-rows: max-content auto max-content;
+}
+
+div.scrollitem {
+  text-align: center;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+div.scrollcontent {
+  display: grid;
+  align-items: center;
+  background-attachment: local;
+  overflow-y: auto;
+  height: auto;
+}
+
+div.scrollitem {
+  display: grid;
+  align-content: center;
+  width: calc(var(--local-scale) * 200px);
+  height: calc(var(--local-scale) * 200px);
+  padding: calc(var(--local-scale) * 5px)
+           calc(var(--local-scale) * 4px);
+  border-style: solid;
+  text-align: left;
+  background-color: transparent;
+  border-color: transparent;
+  border-width: calc(var(--local-scale) * 1px);
+}
+
+div.scrollitem:focus,
+div.scrollitem:focus-within {
+  background-color: #000;
+  border-color: #808080;
+}
+
+div.fgtop,
+div.fgbottom,
+.dirt {
+  margin: 0;
+  color: #FFF;
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  image-rendering: pixelated;
+  background-image: url("./../media/background.png");
+  background-size: calc(var(--local-scale) * 32px);
+  background-color: #404040;
+  background-blend-mode: multiply;
+}
+
+.stone {
+  margin: 0;
+  color: #FFF;
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  image-rendering: pixelated;
+  background-image: url("./../media/background_stone.png");
+  background-size: calc(var(--local-scale) * 32px);
+  background-color: #404040;
+  background-blend-mode: multiply;
+  padding: calc(var(--local-scale) * 5px);
+  box-shadow: 0
+              0
+              calc(var(--local-scale) * 5px)
+              calc(var(--local-scale) * 1.5px)
+              rgba(0, 0, 0, 0.5);
+}
+
+div.fgtop,
+div.fgbottom {
+  width: 100%;
+  z-index: 10;
+  height: calc(var(--local-scale) * 32px);
+  box-shadow: 0px
+              0px
+              calc(var(--local-scale) * 4px)
+              calc(var(--local-scale) * 2px)
+              #000;
+}
+
+.darkbg {
+  background-color: #202020;
+  background-blend-mode: multiply;
+}
+
+.gradient {
+  image-rendering: pixelated;
+  background-size: cover;
+  background-image: linear-gradient(to bottom, #303060, #303060);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+ul {
+  list-style-type: none;
+}
+
+h1,
+h2,
+a,
+p,
+ul,
+span,
+.mcgray-ui, .black, .darkblue, .darkgreen, .darkaqua, .darkred,
+.darkpurple, .gold, .gray, .darkgray, .blue, .green, .aqua, .red,
+.lightpurple, .yellow, .white,
+.mc,
+.mcbutton,
+.mcbutton_disabled,
+.mcslider,
+.mctextfield,
+.mcbuttontext {
+  outline: none;
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  --local-color: var(--text-color, var(--default-color));
+  --local-shadow: var(--shadow-color, var(--default-shadow));
+  font-weight: 100;
+  font-family: "minecraft";
+  word-spacing: calc(2px * var(--local-scale));
+  line-height: calc(12px * var(--local-scale));
+  font-size: calc(8px * var(--local-scale));
+  text-shadow: calc(var(--local-scale) * 1px)
+               calc(var(--local-scale) * 1px)
+               0
+               var(--local-shadow);
+  color: var(--local-color);
+}
+
+.mcslider:before {
+  position: absolute;
+  text-align: center;
+  width: inherit;
+  content: var(--slider-text, "");
+}
+
+ul {
+  padding-inline-start: calc(32px * var(--local-scale));
+  --local-color: #BABABA;
+  --local-shadow: #353535;
+}
+
+::marker {
+  letter-spacing: calc(4px * var(--local-scale));
+  content: "* ";
+}
+
+h1 { --scale: 2; }
+
+h1, h2 {
+  margin: calc(var(--local-scale) * 8px);
+  font-weight: 100;
+}
+
+#small { --scale: 0.5; }
+#small-norm { --scale: 0.75; }
+#norm { --scale: 1; }
+#norm-big { --scale: 1.5; }
+#big { --scale: 2; }
+
+.mcbutton,
+.mcbutton_disabled,
+.mctextfield,
+.mcbuttontext {
+  display: block;
+  margin: calc(var(--local-scale) * 6px);
+  box-sizing: border-box;
+  padding: calc(var(--local-scale) * 6px) 0px;
+  text-align: center;
+  text-decoration: none;
+  background-size: cover;
+  background-image: url("./../media/button.png");
+  line-height: 1;
+  --shadow-color: #383838;
+  --text-color: #E0E0E0;
+  width: calc(var(--local-scale) * 56px);
+  height: calc(var(--local-scale) * 20px);
+}
+
+.mcbutton:focus,
+.mcbutton:hover {
+  background-image: url("./../media/button_hovered.png");
+}
+
+.mcbuttontext {
+  top: 0px;
+  margin: 0px auto;
+  position: absolute;
+  background-image: none;
+  pointer-events: none;
+}
+
+.mcbutton:hover,
+.mcbutton:focus,
+.mcbutton:hover + .mcbuttontext,
+.mcbutton:focus + .mcbuttontext,
+.mcslider:hover,
+.mcslider:hover + .mcbuttontext,
+.mcslider:focus + .mcbuttontext {
+  --shadow-color: #3F3F28;
+  --text-color: #FFFFA0;
+}
+
+.mcbutton_disabled {
+  pointer-events: none;
+}
+
+a.res {
+  --shadow-color: #153F15;
+  --text-color: #55FF55;
+}
+
+a.res:hover,
+a.res:focus {
+  --shadow-color: #002A00;
+  --text-color: #00AA00;
+}
+
+a {
+  --shadow-color: #15153F;
+  --text-color: #5555FF;
+}
+
+a:hover,
+a:focus {
+  --shadow-color: #00002A;
+  --text-color: #0000AA;
+}
+
+h1,
+h2 {
+  --shadow-color: #3F3F3F;
+  --text-color: #FFF;
+}
+
+.redirecting_label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#fill {
+  width: 100%;
+  height: 100vh;
+}
+
+.navbar {
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+  /*width: calc(var(--scale, 1) * 500px);*/
+  width: fit-content;
+  margin: 0 auto;
+  margin-bottom: calc(var(--local-scale) * 5px);
+}
+
+a.navlink {
+  margin: 0 calc(var(--local-scale) * 10px);
+  text-align: center;
+  --local-color: #FFF;
+  --shadow-color: #383838;
+}
+
+a.navlink:hover {
+  --local-color: #FFFFA0;
+  --local-shadow: #3F3F28;
+}
+
+.logo__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  --local-divisor: 5;
+  width: calc(var(--local-scale) * 899px / 5);
+  height: calc(var(--local-scale) * 167px / 5);
+}
+
+.banner {
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  width: 100%;
+  height: calc(var(--local-scale) * 150px);
+  background-image: url("./../media/fig_cave_5.png");
+  background-color: #000;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0
+              0
+              calc(var(--local-scale) * 15px)
+              calc(var(--local-scale) * 12.5px)
+              rgba(0, 0, 0, 0.5);
+}
+
+.container {
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  margin: calc(var(--local-scale) * 5px) auto;
+  padding: calc(var(--local-scale) * 5px);
+  width: calc(var(--local-scale) * 350px);
+}
+
+.container__header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container__image {
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: calc(var(--local-scale) * 7.5px) auto;
+  width: fit-content;
+  box-shadow: 0
+              0
+              calc(var(--local-scale) * 5px)
+              calc(var(--local-scale) * 1.5px)
+              rgba(0, 0, 0, 0.5);
+}
+
+h1.container__subheader {
+  --scale: 1.25;
+  --local-color: #FFF;
+  --local-shadow: #3F3F3F;
+}
+
+.button__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#dgreen {
+  --local-color: #0A0;
+  --local-shadow: #002800;
+}
+
+#white {
+  --local-color: #FFF;
+  --local-shadow: #3F3F3F;
+}
+
+#gold {
+  --local-color: #FA0;
+  --local-shadow: #3F2800;
+}
+
+#red {
+  --local-color: #F00;
+  --local-shadow: #3F0000;
+}
+
+#dred {
+  --local-color: #A00;
+  --local-shadow: #280000;
+}
+
+#yellow {
+  --local-color: #FF5;
+  --local-shadow: #3F3F15;
+}
+
+footer {
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+footer.stone {
+  margin-top: auto;
+}
