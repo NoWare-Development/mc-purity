@@ -455,6 +455,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: calc(var(--local-scale) * 32px);
 }
 
 footer.stone {
