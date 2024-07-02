@@ -335,14 +335,13 @@ h2 {
   justify-content: center;
   align-items: center;
   justify-content: center;
-  /*width: calc(var(--scale, 1) * 500px);*/
   width: fit-content;
   margin: 0 auto;
   margin-bottom: calc(var(--local-scale) * 5px);
 }
 
 a.navlink {
-  margin: 0 calc(var(--local-scale) * 10px);
+  margin: 0 calc(var(--local-scale) * 7.5px);
   text-align: center;
   --local-color: #FFF;
   --shadow-color: #383838;
@@ -401,6 +400,25 @@ a.navlink:hover {
   align-items: center;
   margin: calc(var(--local-scale) * 7.5px) auto;
   width: fit-content;
+  box-shadow: 0
+              0
+              calc(var(--local-scale) * 5px)
+              calc(var(--local-scale) * 1.5px)
+              rgba(0, 0, 0, 0.5);
+}
+
+.container__screenshots {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.container__screenshot {
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  width: calc(var(--local-scale) * 320px);
+  margin: calc(var(--local-scale) * 10px);
   box-shadow: 0
               0
               calc(var(--local-scale) * 5px)
