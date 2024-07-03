@@ -359,9 +359,9 @@ a.navlink:hover {
 }
 
 .logo {
-  --local-divisor: 5;
-  width: calc(var(--local-scale) * 899px / 5);
-  height: calc(var(--local-scale) * 167px / 5);
+  --local-divisor: 6;
+  width: calc(var(--local-scale) * 899px / var(--local-divisor));
+  height: calc(var(--local-scale) * 167px / var(--local-divisor));
 }
 
 .banner {
