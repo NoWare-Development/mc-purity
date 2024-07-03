@@ -359,7 +359,7 @@ a.navlink:hover {
 }
 
 .logo {
-  --local-divisor: 6;
+  --local-divisor: 5;
   width: calc(var(--local-scale) * 899px / var(--local-divisor));
   height: calc(var(--local-scale) * 167px / var(--local-divisor));
 }
