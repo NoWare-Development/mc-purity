@@ -222,8 +222,11 @@ span,
 
 ul {
   padding-inline-start: calc(32px * var(--local-scale));
-  --local-color: #BABABA;
-  --local-shadow: #353535;
+}
+
+li {
+  --local-color: #CACACA;
+  --local-shadow: #2C2C2C;
 }
 
 ::marker {
@@ -400,12 +403,13 @@ a.navlink:hover {
   justify-content: center;
   align-items: center;
   margin: calc(var(--local-scale) * 7.5px) auto;
-  width: fit-content;
+  width: calc(var(--local-scale) * 90px);
   box-shadow: 0
               0
               calc(var(--local-scale) * 5px)
               calc(var(--local-scale) * 1.5px)
               rgba(0, 0, 0, 0.5);
+  max-height: calc(var(--local-scale) * 100px);
 }
 
 .container__screenshots {
