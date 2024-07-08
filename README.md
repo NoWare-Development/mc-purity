@@ -23,6 +23,8 @@ __P.S.__: You may need some instance tinkering (like change java).
 
 __For Other Launchers__: <ins>**NOT SUPPORTED!**</ins>
 
+__Purity Launcher__: <ins>In Development</ins>
+
 ## How to create server?
 1. Download __"purity_server.jar"__ from Releases
 2. Create __"start.bat"__/__"start.sh"__ file in the same folder which contains __"purity_server.jar"__
