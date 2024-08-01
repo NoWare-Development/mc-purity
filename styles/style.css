@@ -345,6 +345,7 @@ h2 {
 }
 
 a.navlink {
+  /*--scale: 0.7;*/
   margin: 0 calc(var(--local-scale) * 7.5px);
   text-align: center;
   --local-color: #FFF;
@@ -473,6 +474,11 @@ h1.container__subheader {
   --local-shadow: #3F3F15;
 }
 
+#gray {
+  --local-color: #CACACA;
+  --local-shadow: #2C2C2C;
+}
+
 footer {
   --local-scale: calc(var(--scale, 1) * var(--global-scale));
   display: flex;
@@ -483,4 +489,9 @@ footer {
 
 footer.stone {
   margin-top: auto;
+}
+
+.blog__text {
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  margin-left: calc(var(--global-scale) * 25px);
 }

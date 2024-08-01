@@ -4,6 +4,7 @@ class PurityHeader extends HTMLElement {
       <header class="stone" >
         <div class="navbar" >
           <a class="navlink" href="./purity.html" >Home</a>
+          <a class="navlink" href="./blog.html" >Blog</a>
           <a class="navlink" href="./download.html" >Download</a>
           <a class="navlink" href="./gallery.html" >Gallery</a>
           <a class="navlink" href="./wiki.html" >Wiki</a>
