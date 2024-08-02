@@ -346,7 +346,7 @@ h2 {
 
 a.navlink {
   /*--scale: 0.7;*/
-  margin: 0 calc(var(--local-scale) * 7.5px);
+  margin: 0 calc(var(--local-scale) * 5.5px);
   text-align: center;
   --local-color: #FFF;
   --shadow-color: #383838;
@@ -493,5 +493,11 @@ footer.stone {
 
 .blog__text {
   --local-scale: calc(var(--scale, 1) * var(--global-scale));
-  margin-left: calc(var(--global-scale) * 25px);
+  margin-left: calc(var(--local-scale) * 25px);
+}
+
+iframe {
+  --local-scale: calc(var(--scale, 1) * var(--global-scale));
+  max-width: calc(var(--local-scale) * 160px);
+  max-height: calc(var(--local-scale) * 90px);
 }
