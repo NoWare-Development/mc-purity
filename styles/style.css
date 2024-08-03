@@ -12,22 +12,40 @@
 
 ::-webkit-scrollbar {
   width: calc(var(--global-scale) * 6px);
-  height: calc(var(--global-scale) * 6px);
 }
 
-::-webkit-scrollbar-corner
 ::-webkit-scrollbar-track {
-  background: #000;
+  background-color: #373737;
+  height: calc(var(--global-scale) * 32px);
+  box-shadow: inset
+              calc(var(--global-scale) * 1px)
+              calc(var(--global-scale) * 1px)
+              0
+              0
+              #000,
+              inset
+              calc(var(--global-scale) * -1px)
+              calc(var(--global-scale) * -1px)
+              0
+              0
+              #000;
 }
 
 ::-webkit-scrollbar-thumb {
+  background-color: #C6C6C6;
   height: calc(var(--global-scale) * 32px);
   box-shadow: inset
               calc(var(--global-scale) * -1px)
               calc(var(--global-scale) * -1px)
               0
               0
-              #808080;
+              #373737,
+              inset
+              calc(var(--global-scale) * 1px)
+              calc(var(--global-scale) * 1px)
+              0
+              0
+              #FFF;
 }
 
 a {
@@ -248,8 +266,8 @@ h1, h2 {
 #big { --scale: 2; }
 
 .mcbutton,
-.mcbutton_disabled,
 .mctextfield,
+.mcbutton_disabled,
 .mcbuttontext {
   display: block;
   margin: calc(var(--local-scale) * 6px);
@@ -269,6 +287,13 @@ h1, h2 {
 .mcbutton:focus,
 .mcbutton:hover {
   background-image: url("./../media/button_hovered.png");
+}
+
+.mcbutton_disabled {
+  background-size: cover;
+  background-image: url("./../media/button_disabled.png");
+  --text-color: #CACACA;
+  --shadow-color: #2C2C2C;
 }
 
 .mcbuttontext {
@@ -500,4 +525,8 @@ iframe {
   --local-scale: calc(var(--scale, 1) * var(--global-scale));
   max-width: calc(var(--local-scale) * 160px);
   max-height: calc(var(--local-scale) * 90px);
+}
+
+.center {
+  text-align: center;
 }
