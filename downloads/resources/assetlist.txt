@@ -93,7 +93,7 @@ newsound/mob/zombie3.ogg
 newsound/mob/zombiedeath.ogg
 newsound/mob/zombiehurt1.ogg
 newsound/mob/zombiehurt2.ogg
-newsound/mob/ghast/affectionate scream.ogg
+newsound/mob/ghast/affectionate^scream.ogg
 newsound/mob/ghast/charge.ogg
 newsound/mob/ghast/death.ogg
 newsound/mob/ghast/fireball4.ogg
@@ -160,7 +160,7 @@ newsound/random/glass3.ogg
 newsound/random/hurt.ogg
 newsound/random/pop.ogg
 newsound/random/splash.ogg
-newsound/random/wood click.ogg
+newsound/random/wood^click.ogg
 newsound/step/cloth1.ogg
 newsound/step/cloth2.ogg
 newsound/step/cloth3.ogg
@@ -200,11 +200,11 @@ newsound/vehicle/minecart6.ogg
 newsound/vehicle/minecart7.ogg
 newsound/vehicle/minecart8.ogg
 pe/humble.png
-sound/loops/birds screaming loop.ogg
-sound/loops/cave chimes.ogg
+sound/loops/birds^screaming^loop.ogg
+sound/loops/cave^chimes.ogg
 sound/loops/ocean.ogg
 sound/loops/waterfall.ogg
-sound/random/wood click.ogg
+sound/random/wood^click.ogg
 sound/step/grass1.ogg
 sound/step/grass2.ogg
 sound/step/grass3.ogg
@@ -234,4 +234,4 @@ streaming/mellohi.mus
 streaming/stal.mus
 streaming/strad.mus
 streaming/ward.mus
-streaming/where are we now.mus
+streaming/where^are^we^now.mus
