@@ -1,0 +1,2 @@
+org/ow2/asm/asm/9.2/asm-9.2.jar
+org/ow2/asm/asm-tree/9.2/asm-tree-9.2.jar
