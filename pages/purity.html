@@ -1,37 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <link rel="stylesheet" href="./../styles/style.css" />
   <link rel="icon" type="image/icon type" href="./../media/icon.png" />
-  <script src="./../scripts/templates.js" ></script>
+  <script src="./../scripts/templates.js"></script>
   <title>MC-Purity: Home</title>
+  <link rel="prefetch" as="image" type="image/png" crossorigin="anonymous" href="./../media/mc-purity-logo.png" />
+  <link rel="prefetch" as="image" type="image/png" crossorigin="anonymous" href="./../media/background.png" />
+  <link rel="prefetch" as="image" type="image/png" crossorigin="anonymous" href="./../media/background-stone.png" />
 </head>
-<body class="dirt" >
+
+<body class="dirt">
   <purity-header></purity-header>
 
-  <div class="banner" ></div>
+  <div class="banner"></div>
 
-  <div class="stone container" >
-    <div class="container__header" >
+  <div class="stone container">
+    <div class="container__header">
       <h1 id="norm-big">Links</h1>
     </div>
 
-    <div class="button__container" >
-      <a class="mcbutton" href="./download.html" >DOWNLOAD</a>
-      <a class="mcbutton" href="./blog.html" >BLOG</a>
-      <a class="mcbutton" href="./gallery.html" >GALLERY</a>
-      <a class="mcbutton" href="./wiki.html" >WIKI</a>
+    <div class="button__container">
+      <a class="mcbutton" href="./download.html">DOWNLOAD</a>
+      <a class="mcbutton" href="./blog.html">BLOG</a>
+      <a class="mcbutton" href="./gallery.html">GALLERY</a>
+      <a class="mcbutton" href="./wiki.html">WIKI</a>
     </div>
 
-    <div class="button__container" >
-      <a class="mcbutton" target="_blank" href="https://github.com/NoWare-Development/mc-purity" >GITHUB</a>
-      <a class="mcbutton" target="_blank" href="https://youtube.com/@nyvyme" >YOUTUBE</a>
-      <a class="mcbutton" target="_blank" href="https://t.me/mcpurity" >TELEGRAM</a>
+    <div class="button__container">
+      <a class="mcbutton" target="_blank" href="https://github.com/NoWare-Development/mc-purity">GITHUB</a>
+      <a class="mcbutton" target="_blank" href="https://youtube.com/@nyvyme">YOUTUBE</a>
+      <a class="mcbutton" target="_blank" href="https://t.me/mcpurity">TELEGRAM</a>
     </div>
   </div>
-  <div class="stone container" >
-    <div class="container__header" >
-      <h1 id="norm-big" >About</h1>
+  <div class="stone container">
+    <div class="container__header">
+      <h1 id="norm-big">About</h1>
     </div>
 
     <p>
@@ -40,49 +45,50 @@
     </p>
   </div>
 
-  <div class="stone container" >
-    <div class="container__header" >
-      <h1 id="norm-big" >Updates</h1>
+  <div class="stone container">
+    <div class="container__header">
+      <h1 id="norm-big">Updates</h1>
     </div>
 
-    <h1 class="container__subheader" >1.0.2_01:</h1>
+    <h1 class="container__subheader">1.0.2_01:</h1>
     <ul>
       <li>Fixed some issues with slabs</li>
       <li>Added new colored server name labels</li>
       <ul>
-        <li>Not logged in - <span id="dgreen" >Dark Green</span></li>
-        <li>Player - <span id="white" >White</span></li>
-        <li>Operator - <span id="gold" >Gold</span></li>
-        <li>Mod developer - <span id="red" >Red</span></li>
-        <li>Mojang employee - <span id="dred" >Dark Red</span></li>
-        <li>Notch - <span id="yellow" >Yellow</span></li>
+        <li>Not logged in - <span id="dgreen">Dark Green</span></li>
+        <li>Player - <span id="white">White</span></li>
+        <li>Operator - <span id="gold">Gold</span></li>
+        <li>Mod developer - <span id="red">Red</span></li>
+        <li>Mojang employee - <span id="dred">Dark Red</span></li>
+        <li>Notch - <span id="yellow">Yellow</span></li>
       </ul>
     </ul>
 
-    <h1 class="container__subheader" >1.0.2:</h1>
+    <h1 class="container__subheader">1.0.2:</h1>
     <ul>
       <li>Now stairs and slabs can be placed upside down</li>
       <li>Small fixes</li>
     </ul>
 
-    <h1 class="container__subheader" >1.0.1_02:</h1>
+    <h1 class="container__subheader">1.0.1_02:</h1>
     <ul>
       <li>Replaced if-elses in renderer code</li>
       <li>Now fence's collision is more like modern Minecraft</li>
       <li>Fixed grass blocks were not becoming dirt when there's block at top of them</li>
     </ul>
 
-    <h1 class="container__subheader" >1.0.1_01:</h1>
+    <h1 class="container__subheader">1.0.1_01:</h1>
     <ul>
       <li>Fixed server sometimes fail to load chunks because of error in NBT tag related to Dead Miner</li>
       <li>Removed NBT tag saving for Dead Miner (yes, this is really stupid, but I was lazy)</li>
-      <li>Added "/spawn" command which spawns mob in 3 blocks away from you by X coordinate (only for debugging purpose)</li>
+      <li>Added "/spawn" command which spawns mob in 3 blocks away from you by X coordinate (only for debugging purpose)
+      </li>
       <li>Fixed diamond, emerald and ruby ore generation</li>
       <li>Fixed unsynced Dead Miner's pickaxe in hand in multiplayer client-side</li>
       <li>Now Dead Miner will not die immediately on daylight</li>
     </ul>
 
-    <h1 class="container__subheader" >1.0.1:</h1>
+    <h1 class="container__subheader">1.0.1:</h1>
     <ul>
       <li>Added new mob "Dead Miner"</li>
       <li>Fixed crosshair's position being affected by "Vertical gap" option</li>
@@ -90,14 +96,15 @@
       <li>Now server work (it didn't work because I'm stupid)</li>
     </ul>
 
-    <h1 class="container__subheader" >1.0.0:</h1>
+    <h1 class="container__subheader">1.0.0:</h1>
     <ul>
       <li>First release</li>
     </ul>
   </div>
 
-  <footer class="stone" >
-    <h2>© <a target="_blank" href="https://github.com/NoWare-Development" >NoWare.Development</a> and contributors.</h2>
+  <footer class="stone">
+    <h2>© <a target="_blank" href="https://github.com/NoWare-Development">NoWare.Development</a> and contributors.</h2>
   </footer>
 </body>
+
 </html>
