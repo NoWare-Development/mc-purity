@@ -60,6 +60,10 @@ const blog_07_31_24 = new BlogEntry(7, 31, 2024, `
 
 const blog_12_15_24 = new BlogEntry(12, 15, 2024, `
   Released a new major version 1.1.0.
+
+  <div>
+    Happy birthday, King Terry The Terrible <3
+  </div>
 `);
 
 const allBlogs = [
