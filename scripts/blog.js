@@ -58,6 +58,11 @@ const blog_07_31_24 = new BlogEntry(7, 31, 2024, `
   <iframe width="560" height="315" src="https://www.youtube.com/embed/iXivv2AYCGc?si=2H6niPuhqd9ymN_R" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 `);
 
+const blog_12_15_24 = new BlogEntry(12, 15, 2024, `
+  Released a new major version 1.1.0.
+`);
+
 const allBlogs = [
-  blog_07_31_24
+  blog_12_15_24,
+  blog_07_31_24,
 ];
