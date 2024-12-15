@@ -9,7 +9,7 @@
 Supported Java version : __8__
 
 ## How to install ?
-__For **MultiMC/PrismLauncher**__:
+For **MultiMC/PrismLauncher**:
 1. Download __"purity.zip"__ from **Releases**
 2. Open **MultiMC**
 3. Click _"Add instance"_
@@ -19,11 +19,11 @@ __For **MultiMC/PrismLauncher**__:
 7. Click _"OK"_
 8. Done
    
-__**P.S.**__ : You may need some instance tinkering (__like changing java__).
+**P.S.** : You may need some instance tinkering (__like changing java__).
 
-__Other Launchers__ : __**NOT SUPPORTED**__
+__Other Launchers__ : **NOT SUPPORTED**
 
-__Purity Launcher__: __**in development**
+__Purity Launcher__: **in development**
 
 ## How do you create a server?
 1. Download __"purity_server.jar"__ from **Releases**
