@@ -66,7 +66,12 @@ const blog_12_15_24 = new BlogEntry(12, 15, 2024, `
   </div>
 `);
 
+const blog_12_24_24 = new BlogEntry(12, 24, 2024, `
+  Released a new minor version 1.1.1.
+`);
+
 const allBlogs = [
+  blog_12_24_24,
   blog_12_15_24,
   blog_07_31_24,
 ];
