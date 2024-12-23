@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="./../styles/style.css" />
+  <link rel="icon" type="image/icon type" href="./../media/icon.png" />
+  <script src="./../scripts/templates.js"></script>
+  <title>MC-Purity: Skins</title>
+  <link rel="prefetch" as="image" type="image/png" crossorigin="anonymous" href="./../media/mc-purity-logo.png" />
+  <link rel="prefetch" as="image" type="image/png" crossorigin="anonymous" href="./../media/background.png" />
+  <link rel="prefetch" as="image" type="image/png" crossorigin="anonymous" href="./../media/background-stone.png" />
+</head>
+
+<body class="dirt">
+  <purity-header></purity-header>
+
+  <div class="stone container">
+    <div class="container__header">
+      <h1 id="norm-big">Using skins</h1>
+    </div>
+
+    <h1 class="container__subheader">Method 1: Using LaunchWrapper</h1>
+    <ul>
+      <li>
+        Follow
+        <a href="https://github.com/MCPHackers/LaunchWrapper/blob/main/README.md#how-to-use">this</a>
+        guide by MCPHackers.
+      </li>
+    </ul>
+
+    <h1 class="container__subheader">Method 2: Using Betacraft proxy</h1>
+    <ul>
+      Add this line to the JVM arguments in your launcher:
+      <p id="dgreen">-Dhttp.proxyHost=betacraft.uk -Dhttp.proxyPort=11705</p>
+
+      <p>This proxy will use proper data for versions from a1.2.0 to b1.8.1.</p>
+    </ul>
+  </div>
+
+  <footer class="stone">
+    <h2>© <a target="_blank" href="https://github.com/NoWare-Development">NoWare.Development</a> and contributors.
+    </h2>
+  </footer>
+</body>
+
+</html>
