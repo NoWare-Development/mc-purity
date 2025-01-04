@@ -70,6 +70,10 @@ const blog_12_24_24 = new BlogEntry(12, 24, 2024, `
   Released a new minor version 1.1.1.
 `);
 
+const blog_01_04_25 = new BlogEntry(1, 4, 2025, `
+  Released a new version 1.1.1_01.
+`);
+
 const allBlogs = [
   blog_12_24_24,
   blog_12_15_24,
