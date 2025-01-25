@@ -79,6 +79,8 @@ const blog_01_25_25 = new BlogEntry(1, 25, 2025, `
 `);
 
 const allBlogs = [
+  blog_01_25_25,
+  blog_01_04_25,
   blog_12_24_24,
   blog_12_15_24,
   blog_07_31_24,
