@@ -59,7 +59,7 @@ const blog_07_31_24 = new BlogEntry(7, 31, 2024, `
 `);
 
 const blog_12_15_24 = new BlogEntry(12, 15, 2024, `
-  Released a new major version 1.1.0.
+  Released new major version 1.1.0.
 
   <div>
     Happy birthday, King Terry The Terrible <3
@@ -67,11 +67,15 @@ const blog_12_15_24 = new BlogEntry(12, 15, 2024, `
 `);
 
 const blog_12_24_24 = new BlogEntry(12, 24, 2024, `
-  Released a new minor version 1.1.1.
+  Released new minor version 1.1.1.
 `);
 
 const blog_01_04_25 = new BlogEntry(1, 4, 2025, `
-  Released a new version 1.1.1_01.
+  Released new version 1.1.1_01.
+`);
+
+const blog_01_25_25 = new BlogEntry(1, 25, 2025, `
+  Released new version 1.1.1_02.
 `);
 
 const allBlogs = [
