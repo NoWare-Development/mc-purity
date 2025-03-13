@@ -78,7 +78,12 @@ const blog_01_25_25 = new BlogEntry(1, 25, 2025, `
   Released new version 1.1.1_02.
 `);
 
+const blog_03_13_25 = new BlogEntry(3, 13, 2025, `
+  Released new version 1.2.0.
+`);
+
 const allBlogs = [
+  blog_03_13_25,
   blog_01_25_25,
   blog_01_04_25,
   blog_12_24_24,
