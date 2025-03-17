@@ -173,7 +173,14 @@ const change_1_2_0 = new ChangelogEntry("1.2.0",
   ]
 );
 
+const change_1_2_1 = new ChangelogEntry("1.2.1",
+  [
+    "Rebalanced dungeon loot table",
+  ]
+);
+
 const allChanges = [
+  change_1_2_1,
   change_1_2_0,
   change_1_1_1_02,
   change_1_1_1_01,
