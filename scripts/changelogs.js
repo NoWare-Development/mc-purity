@@ -179,7 +179,14 @@ const change_1_2_1 = new ChangelogEntry("1.2.1",
   ]
 );
 
+const change_1_2_1_01 = new ChangelogEntry("1.2.1_01",
+  [
+    "Fixed crash when generating dungeons.",
+  ]
+);
+
 const allChanges = [
+  change_1_2_1_01,
   change_1_2_1,
   change_1_2_0,
   change_1_1_1_02,

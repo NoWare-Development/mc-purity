@@ -86,7 +86,16 @@ const blog_03_17_25 = new BlogEntry(3, 17, 2025, `
   Released new version 1.2.1.
 `);
 
+const blog_04_05_25 = new BlogEntry(4, 5, 2025, `
+  Released new version 1.2.1_01.
+
+  <div>
+    R.I.P. Technique.
+  </div>
+`);
+
 const allBlogs = [
+  blog_04_05_25,
   blog_03_17_25,
   blog_03_13_25,
   blog_01_25_25,
