@@ -181,11 +181,23 @@ const change_1_2_1 = new ChangelogEntry("1.2.1",
 
 const change_1_2_1_01 = new ChangelogEntry("1.2.1_01",
   [
-    "Fixed crash when generating dungeons.",
+    "Fixed crash when generating dungeons",
   ]
 );
 
+const change_1_2_2 = new ChangelogEntry("1.2.2",
+  [
+    "Fixed rocks sometimes being dropped from obsidian",
+    "Portals can only made from obsidian that was placed by hand",
+    "Changed magma pieces drop rate from 4 to 1-4",
+    "Increased burn time for magma pieces",
+    "Bookshelfs now drop 3 books",
+    "UI fixes",
+  ],
+);
+
 const allChanges = [
+  change_1_2_2,
   change_1_2_1_01,
   change_1_2_1,
   change_1_2_0,

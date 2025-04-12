@@ -100,7 +100,12 @@ const blog_04_05_25 = new BlogEntry(4, 5, 2025, `
   </div>
 `);
 
+const blog_04_12_25 = new BlogEntry(4, 12, 2025, `
+  Released new version 1.2.2.
+`);
+
 const allBlogs = [
+  blog_04_12_25,
   blog_04_05_25,
   blog_03_17_25,
   blog_03_13_25,
